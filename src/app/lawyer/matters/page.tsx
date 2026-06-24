@@ -1,10 +1,8 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import Link from "next/link";
 import { Loader2, CheckCircle, ArrowRight, Filter } from "lucide-react";
 import { statusStyles, statusLabels, urgencyStyles, urgencyLabels, stageStepMap, MATTER_STAGES, TOTAL_STAGES } from "@/lib/utils";
-import { MATTER_TYPES } from "@/types";
 import type { IMatter, MatterStatus, MatterStage } from "@/types";
 
 export default function LawyerMattersPage() {
@@ -100,17 +98,34 @@ export default function LawyerMattersPage() {
                     <div className="text-xs text-gray-400 mt-0.5 flex items-center gap-2">
                       <span className="font-mono">{m.referenceNumber}</span>
                       <span>·</span>
-                      <span className="capitalize">{m.type.replace(/_/g, " ")}</span>
-                      {m.client.state && <><span>·</span><span>{m.client.state}</span></>}
+                      <span className="capitalize">
+                        {m.type.replace(/_/g, " ")}
+                      </span>
+                      {m.client.state && (
+                        <>
+                          <span>·</span>
+                          <span>{m.client.state}</span>
+                        </>
+                      )}
                     </div>
                   </div>
                   <div className="flex items-center gap-2 shrink-0">
                     {m.urgency !== "normal" && (
-                      <span className={"badge text-xs " + urgencyStyles[m.urgency as keyof typeof urgencyStyles]}>
+                      <span
+                        className={
+                          "badge text-xs " +
+                          urgencyStyles[m.urgency as keyof typeof urgencyStyles]
+                        }
+                      >
                         {urgencyLabels[m.urgency as keyof typeof urgencyLabels]}
                       </span>
                     )}
-                    <span className={"badge text-xs " + statusStyles[m.status as MatterStatus]}>
+                    <span
+                      className={
+                        "badge text-xs " +
+                        statusStyles[m.status as MatterStatus]
+                      }
+                    >
                       {statusLabels[m.status as MatterStatus]}
                     </span>
                   </div>
@@ -126,13 +141,28 @@ export default function LawyerMattersPage() {
                   <>
                     <div className="mb-4">
                       <div className="flex justify-between text-xs text-gray-400 mb-1.5">
-                        <span>{MATTER_STAGES.find(s => s.value === m.stage)?.label ?? m.stage}</span>
-                        <span>{step} / {TOTAL_STAGES}</span>
+                        <span>
+                          {MATTER_STAGES.find((s) => s.value === m.stage)
+                            ?.label ?? m.stage}
+                        </span>
+
+                        <span>
+                          {step} / {TOTAL_STAGES}
+                        </span>
                       </div>
                       <div className="flex gap-1">
                         {MATTER_STAGES.map(({ value, step: s }) => (
-                          <div key={value}
-                            className={"flex-1 h-1.5 rounded-full " + (s < step ? "bg-brand-600" : s === step ? "bg-brand-300" : "bg-gray-100")} />
+                          <div
+                            key={value}
+                            className={
+                              "flex-1 h-1.5 rounded-full " +
+                              (s < step
+                                ? "bg-brand-600"
+                                : s === step
+                                  ? "bg-brand-300"
+                                  : "bg-gray-100")
+                            }
+                          />
                         ))}
                       </div>
                     </div>
@@ -140,24 +170,36 @@ export default function LawyerMattersPage() {
                     {/* Actions */}
                     <div className="flex items-center gap-3 flex-wrap pt-3 border-t border-gray-100">
                       <div className="flex items-center gap-2">
-                        <span className="text-xs text-gray-500 shrink-0">Update stage:</span>
+                        <span className="text-xs text-gray-500 shrink-0">
+                          Update stage:
+                        </span>
                         <select
                           className="input py-1 text-xs w-44"
                           value={m.stage}
                           disabled={isUpdating}
-                          onChange={(e) => updateStage(m._id, e.target.value as MatterStage)}>
-                          {MATTER_STAGES.filter(s => s.value !== "completed").map(({ value, label }) => (
-                            <option key={value} value={value}>{label}</option>
+                          onChange={(e) =>
+                            updateStage(m._id, e.target.value as MatterStage)
+                          }
+                        >
+                          {MATTER_STAGES.filter(
+                            (s) => s.value !== "completed",
+                          ).map(({ value, label }) => (
+                            <option key={value} value={value}>
+                              {label}
+                            </option>
                           ))}
                         </select>
                       </div>
                       <button
                         onClick={() => markComplete(m._id)}
                         disabled={isUpdating}
-                        className="btn btn-primary text-xs gap-1.5 ml-auto">
-                        {isUpdating
-                          ? <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                          : <CheckCircle className="w-3.5 h-3.5" />}
+                        className="btn btn-primary text-xs gap-1.5 ml-auto"
+                      >
+                        {isUpdating ? (
+                          <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                        ) : (
+                          <CheckCircle className="w-3.5 h-3.5" />
+                        )}
                         Mark complete
                       </button>
                     </div>
@@ -167,9 +209,16 @@ export default function LawyerMattersPage() {
                 {tab === "completed" && (
                   <div className="flex items-center gap-2 pt-3 border-t border-gray-100">
                     <CheckCircle className="w-4 h-4 text-green-600" />
-                    <span className="text-xs text-green-700 font-medium">Resolved</span>
+                    <span className="text-xs text-green-700 font-medium">
+                      Resolved
+                    </span>
                     <span className="text-xs text-gray-400 ml-auto">
-                      Last updated {new Date(m.updatedAt).toLocaleDateString("en-NG", { day:"numeric", month:"short", year:"numeric" })}
+                      Last updated{" "}
+                      {new Date(m.updatedAt).toLocaleDateString("en-NG", {
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric",
+                      })}
                     </span>
                   </div>
                 )}
