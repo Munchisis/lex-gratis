@@ -13,8 +13,8 @@ export interface IMatterDocument extends Document {
   type: MatterType;
   description: string;
   urgency: MatterUrgency;
-  status: MatterStatus;
-  stage: MatterStage;
+  status: string;
+  stage: string;
   assignedLawyer?: mongoose.Types.ObjectId;
   notes: {
     author: mongoose.Types.ObjectId;
@@ -27,6 +27,8 @@ export interface IMatterDocument extends Document {
     changedBy: mongoose.Types.ObjectId;
     changedAt: Date;
   }[];
+    createdAt: Date;
+  updatedAt: Date;
 }
 
 const ClientSchema = new Schema<IClient>(
