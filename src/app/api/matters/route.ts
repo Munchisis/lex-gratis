@@ -5,6 +5,7 @@ import { connectDB } from "@/lib/db";
 import Matter from "@/models/Matter";
 import { authOptions } from "@/lib/auth";
 import { generateReferenceNumber } from "@/lib/utils";
+import mongoose from "mongoose";
 
 // ─── Submit a matter (public — no auth required) ──────────────────────────────
 
@@ -101,7 +102,7 @@ export async function GET(req: NextRequest) {
 
     if (session.user.role === "lawyer") {
       // Lawyers only see their own matters
-      query.assignedLawyer = session.user.id;
+      query.assignedLawyer = new mongoose.Types.ObjectId(session.user.id);
     }
 
     if (status)  query.status  = status;

@@ -4,6 +4,7 @@ import { authOptions } from "@/lib/auth";
 import { connectDB } from "@/lib/db";
 import Matter from "@/models/Matter";
 import User from "@/models/User";
+import mongoose from "mongoose";
 
 export async function POST(
   req: NextRequest,
@@ -28,7 +29,7 @@ export async function POST(
     );
   }
 
-  matter.assignedLawyer = session.user.id as unknown as typeof matter.assignedLawyer;
+  matter.assignedLawyer = new mongoose.Types.ObjectId(session.user.id) as unknown as typeof matter.assignedLawyer;
   matter.status = "assigned";
   matter.stage  = "client_consultation";
   await matter.save();
