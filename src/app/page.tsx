@@ -12,7 +12,7 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-white">
       {/* Navbar */}
-      <nav className="border-b border-gray-100 bg-white sticky top-0 z-50">
+      <nav className="border-b border-gray-100 bg-white sticky top-0 z-50 shadow-lg">
         <div className="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <Link
@@ -61,7 +61,7 @@ export default function HomePage() {
             <ShieldCheck className="w-3.5 h-3.5" />
             Free · Confidential · Professional
           </div>
-          <h1 className="text-4xl md:text-5xl font-medium leading-tight mb-5 text-white">
+          <h1 className="text-4xl md:text-5xl max-w-4xl font-black leading-tight mb-5 text-le tracking-wide mx-auto">
             Justice should not depend on
             <br className="hidden md:block" /> what you can afford
           </h1>
@@ -78,7 +78,7 @@ export default function HomePage() {
             </Link>
             <Link
               href="/track"
-              className="inline-flex items-center gap-2 border border-brand-600 text-brand-200 px-6 py-3 rounded-lg hover:bg-brand-700 transition-colors text-sm"
+              className="border border-white/30 text-white font-medium px-6 py-3 rounded-xl hover:bg-white/10 hover:border-white/60 transition-all duration-200"
             >
               Track existing matter
             </Link>
@@ -112,36 +112,39 @@ export default function HomePage() {
             Three simple steps between you and qualified legal help.
           </p>
         </div>
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 px-4 max-w-6xl mx-auto">
           {[
             {
-              icon: FileText,
               step: "01",
               title: "Describe your matter",
-              desc: "Fill in a short form explaining your situation. No legal jargon needed — just tell us what happened.",
+              desc: "Fill in a short form explaining your situation. No legal jargon needed.",
             },
             {
-              icon: UserCheck,
               step: "02",
               title: "Get matched to a lawyer",
-              desc: "Our team reviews your submission and assigns a qualified lawyer suited to your matter within 72 hours.",
+              desc: "Our team reviews your submission and assigns a qualified lawyer within 72 hours.",
             },
             {
-              icon: Scale,
               step: "03",
               title: "Receive free legal help",
-              desc: "Your assigned lawyer contacts you and handles your matter — completely free of charge.",
+              desc: "Your assigned lawyer contacts you and handles your matter completely free.",
             },
-          ].map(({ icon: Icon, step, title, desc }) => (
-            <div key={step}>
-              <div className="text-xs font-mono text-brand-400 font-medium mb-3">
-                {step}
+          ].map((item, i) => (
+            <div
+              key={i}
+              className="relative bg-white border border-neutral-100 rounded-2xl p-8 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 group"
+            >
+              {/* Large faint background step number */}
+              <div className="absolute top-1 right-4 text-5xl font-black text-brand-400/10 select-none group-hover:text-brand-400/20 transition-colors ">
+                {item.step}
               </div>
-              <div className="w-10 h-10 bg-brand-50 rounded-xl flex items-center justify-center mb-4">
-                <Icon className="w-5 h-5 text-brand-600" />
-              </div>
-              <h3 className="text-base font-medium mb-2">{title}</h3>
-              <p className="text-sm text-gray-500 leading-relaxed">{desc}</p>
+
+              <h3 className="text-xl font-bold text-neutral-900 tracking-tight mb-3 mt-7">
+                {item.title}
+              </h3>
+              <p className="text-neutral-600 leading-relaxed text-sm">
+                {item.desc}
+              </p>
             </div>
           ))}
         </div>
