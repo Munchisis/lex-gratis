@@ -13,7 +13,6 @@ import {
 } from "lucide-react";
 import { cn, getInitials } from "@/lib/utils";
 
-
 interface Props {
   user: { name?: string | null; email?: string | null };
 }
@@ -24,7 +23,6 @@ const nav = [
   { href: "/lawyer/matters", label: "My matters", icon: FileText },
 ];
 
-
 export function LawyerSidebar({ user }: Props) {
   const pathname = usePathname();
 
@@ -34,12 +32,12 @@ export function LawyerSidebar({ user }: Props) {
         <div className="w-8 h-8 bg-brand-600 rounded-lg flex items-center justify-center shrink-0">
           <Scale className="w-4 h-4 text-white" />
         </div>
-        <div>
+        <Link href="/">
           <div className="text-sm font-semibold text-white leading-none">
-          HUMRI
+            HUMRI
           </div>
-          <div className="text-xs text-gray-400 mt-0.5">Lawyer portal</div>
-        </div>
+        </Link>
+        <div className="text-xs text-gray-400 mt-0.5">Lawyer portal</div>
       </div>
 
       <nav className="flex-1 py-4 px-3 space-y-0.5">

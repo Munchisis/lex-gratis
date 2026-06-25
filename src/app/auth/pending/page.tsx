@@ -17,7 +17,7 @@ export default function PendingPage() {
         <div className="bg-amber-50 border border-amber-200 rounded-lg px-4 py-3 text-sm text-amber-700 mb-6 text-left">
           <p className="font-medium mb-1">What happens next?</p>
           <ul className="space-y-1 text-xs">
-            <li>· Admin reviews your NBA bar number and details</li>
+            <li>· Admin reviews your SCN number and details</li>
             <li>· Approval typically takes 1–2 business days</li>
             <li>· You will be notified by email once approved</li>
           </ul>

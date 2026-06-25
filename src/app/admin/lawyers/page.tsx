@@ -151,7 +151,7 @@ export default function AdminLawyersPage() {
                     </span>
                     <span className="flex items-center gap-1">
                       <span className="w-1.5 h-1.5 rounded-full bg-gray-300 inline-block" />
-                      NBA: {l.barNumber || "—"}
+                      SCN: {l.barNumber || "—"}
                     </span>
                   </div>
 

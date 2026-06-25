@@ -1,5 +1,12 @@
 import Link from "next/link";
-import { Scale, ShieldCheck, ArrowRight, FileText, UserCheck, Users } from "lucide-react";
+import {
+  Scale,
+  ShieldCheck,
+  ArrowRight,
+  FileText,
+  UserCheck,
+  Users,
+} from "lucide-react";
 
 export default function HomePage() {
   return (
@@ -8,16 +15,20 @@ export default function HomePage() {
       <nav className="border-b border-gray-100 bg-white sticky top-0 z-50">
         <div className="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 bg-brand-800 rounded-lg flex items-center justify-center">
+            <Link
+              href="/"
+              className="w-8 h-8 bg-brand-800 rounded-lg flex items-center justify-center"
+            >
               <Scale className="w-4 h-4 text-brand-100" />
-            </div>
+            </Link>
             <div>
-              <div className="text-sm font-semibold leading-none text-gray-900">
+              <Link
+                href="/"
+                className="text-sm font-semibold leading-none text-gray-900"
+              >
                 HUMRI
-              </div>
-              <div className="text-xs text-gray-400 mt-0.5">
-                legal aid
-              </div>
+              </Link>
+              <div className="text-xs text-gray-400 mt-0.5">legal aid</div>
             </div>
           </div>
           <div className="flex items-center gap-3">

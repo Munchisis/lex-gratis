@@ -26,13 +26,13 @@ export function AdminSidebar({ user }: Props) {
     <aside className="w-60 shrink-0 bg-brand-900 flex flex-col min-h-screen">
       {/* Logo */}
       <div className="flex items-center gap-3 px-5 py-5 border-b border-brand-800">
-        <div className="w-8 h-8 bg-brand-100 rounded-lg flex items-center justify-center shrink-0">
+        <Link href="/" className="w-8 h-8 bg-brand-100 rounded-lg flex items-center justify-center shrink-0">
           <Scale className="w-4 h-4 text-brand-900" />
-        </div>
+        </Link>
         <div>
-          <div className="text-sm font-semibold text-brand-50 leading-none">
+          <Link href="/" className="text-sm font-semibold text-brand-50 leading-none">
             HUMRI
-          </div>
+          </Link>
           <div className="text-xs text-brand-400 mt-0.5">Admin</div>
         </div>
       </div>

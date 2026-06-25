@@ -180,10 +180,10 @@ export default function RegisterPage() {
               </p>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="label">NBA bar number</label>
+                  <label className="label">SCN number</label>
                   <input
                     className="input"
-                    placeholder="e.g. NBA/2018/1234"
+                    placeholder="e.g. SCN 123456"
                     required
                     value={form.barNumber}
                     onChange={(e) => update("barNumber", e.target.value)}
