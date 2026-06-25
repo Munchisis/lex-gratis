@@ -133,21 +133,13 @@ export default function LawyerMattersPage() {
                   <div className="flex items-center gap-2 shrink-0">
                     {m.urgency !== "normal" && (
                       <span
-                        className={
-                          "badge text-xs " +
-                          urgencyStyles[m.urgency as MatterUrgency]
-                        }
+                        className={"badge text-xs " + urgencyStyles[m.urgency]}
                       >
-                        {urgencyLabels[m.urgency as MatterUrgency]}
+                        {urgencyLabels[m.urgency]}
                       </span>
                     )}
-                    <span
-                      className={
-                        "badge text-xs " +
-                        statusStyles[m.status as MatterStatus]
-                      }
-                    >
-                      {statusLabels[m.status as MatterStatus]}
+                    <span className={"badge text-xs " + statusStyles[m.status]}>
+                      {statusLabels[m.status]}
                     </span>
                   </div>
                 </div>

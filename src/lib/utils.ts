@@ -19,7 +19,7 @@ export function generateReferenceNumber(): string {
 
 // ─── Badge colour maps ────────────────────────────────────────────────────────
 
-export const statusStyles: Record<MatterStatus, string> = {
+export const statusStyles: Record<string, string> = {
   unassigned:    "bg-blue-50 text-blue-800 border-blue-200",
   assigned:      "bg-amber-50 text-amber-800 border-amber-200",
   in_progress:   "bg-purple-50 text-purple-800 border-purple-200",
@@ -28,7 +28,7 @@ export const statusStyles: Record<MatterStatus, string> = {
   archived:      "bg-gray-50 text-gray-600 border-gray-200",
 };
 
-export const statusLabels: Record<MatterStatus, string> = {
+export const statusLabels: Record<string, string> = {
   unassigned:    "Unassigned",
   assigned:      "Assigned",
   in_progress:   "In progress",
@@ -37,13 +37,13 @@ export const statusLabels: Record<MatterStatus, string> = {
   archived:      "Archived",
 };
 
-export const urgencyStyles: Record<MatterUrgency, string> = {
+export const urgencyStyles: Record<string, string> = {
   normal:   "bg-green-50 text-green-800 border-green-200",
   urgent:   "bg-amber-50 text-amber-800 border-amber-200",
   critical: "bg-red-50 text-red-800 border-red-200",
 };
 
-export const urgencyLabels: Record<MatterUrgency, string> = {
+export const urgencyLabels: Record<string, string> = {
   normal:   "Normal",
   urgent:   "Urgent",
   critical: "Critical",
