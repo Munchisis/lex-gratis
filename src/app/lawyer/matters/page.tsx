@@ -8,10 +8,20 @@ import {
   urgencyStyles,
   urgencyLabels,
   stageStepMap,
-  MATTER_STAGES,
-  TOTAL_STAGES,
 } from "@/lib/utils";
-import type { IMatter, MatterStatus, MatterStage } from "@/types";
+
+const STAGE_LABELS: Record<string, string> = {
+  intake: "Intake",
+  client_consultation: "Client consultation",
+  document_review: "Document review",
+  filing: "Filing",
+  negotiation: "Negotiation",
+  hearing: "Hearing",
+  awaiting_judgment: "Awaiting judgment",
+  completed: "Completed",
+};
+
+import type { IMatter, MatterStage } from "@/types";
 
 export default function LawyerMattersPage() {
   const [matters, setMatters] = useState<IMatter[]>([]);
@@ -154,28 +164,27 @@ export default function LawyerMattersPage() {
                   <>
                     <div className="mb-4">
                       <div className="flex justify-between text-xs text-gray-400 mb-1.5">
+                        {STAGE_LABELS[stage] ?? stage}
                         <span>
-                          {MATTER_STAGES.find((s) => s.value === stage)
-                            ?.label ?? stage}
-                        </span>
-                        <span>
-                          {step} / {TOTAL_STAGES}
                         </span>
                       </div>
                       <div className="flex gap-1">
-                        {MATTER_STAGES.map(({ value, step: s }) => (
-                          <div
-                            key={value}
-                            className={
-                              "flex-1 h-1.5 rounded-full " +
-                              (s < step
-                                ? "bg-brand-600"
-                                : s === step
-                                  ? "bg-brand-300"
-                                  : "bg-gray-100")
-                            }
-                          />
-                        ))}
+                        {Object.keys(STAGE_LABELS).map((value, index) => {
+                          const s = index + 1;
+                          return (
+                            <div
+                              key={value}
+                              className={
+                                "flex-1 h-1.5 rounded-full " +
+                                (s < step
+                                  ? "bg-brand-600"
+                                  : s === step
+                                    ? "bg-brand-300"
+                                    : "bg-gray-100")
+                              }
+                            />
+                          );
+                        })}
                       </div>
                     </div>
 
@@ -193,13 +202,13 @@ export default function LawyerMattersPage() {
                             updateStage(m._id, e.target.value as MatterStage)
                           }
                         >
-                          {MATTER_STAGES.filter(
-                            (s) => s.value !== "completed",
-                          ).map(({ value, label }) => (
-                            <option key={value} value={value}>
-                              {label}
-                            </option>
-                          ))}
+                          {Object.entries(STAGE_LABELS)
+                            .filter(([value]) => value !== "completed")
+                            .map(([value, label]) => (
+                              <option key={value} value={value}>
+                                {label}
+                              </option>
+                            ))}
                         </select>
                       </div>
                       <button
