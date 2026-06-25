@@ -1,20 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Scale, AlertCircle, Loader2 } from "lucide-react";
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") ?? "";
 
-  const [email, setEmail]       = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError]       = useState("");
-  const [loading, setLoading]   = useState(false);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -34,14 +34,12 @@ export default function LoginPage() {
       return;
     }
 
-    // Redirect based on role — middleware handles wrong-role access
     if (callbackUrl) {
       router.push(callbackUrl);
     } else {
-      // Determine destination from session role
       const sessionRes = await fetch("/api/auth/session");
-      const session    = await sessionRes.json();
-      const role       = session?.user?.role;
+      const session = await sessionRes.json();
+      const role = session?.user?.role;
       router.push(role === "admin" ? "/admin" : "/lawyer");
     }
   }
@@ -49,14 +47,13 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
-        {/* Logo */}
         <div className="flex items-center gap-3 justify-center mb-8">
           <div className="w-10 h-10 bg-brand-800 rounded-xl flex items-center justify-center">
             <Scale className="w-5 h-5 text-brand-100" />
           </div>
           <div>
             <div className="text-lg font-semibold text-gray-900 leading-none">
-              HUMRI
+              Lex Gratis
             </div>
             <div className="text-xs text-gray-400 tracking-wide uppercase mt-0.5">
               Pro bono legal aid
@@ -93,7 +90,6 @@ export default function LoginPage() {
                 autoComplete="email"
               />
             </div>
-
             <div>
               <label className="label">Password</label>
               <input
@@ -106,7 +102,6 @@ export default function LoginPage() {
                 autoComplete="current-password"
               />
             </div>
-
             <button
               type="submit"
               disabled={loading}
@@ -134,5 +129,13 @@ export default function LoginPage() {
         </p>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense>
+      <LoginForm />
+    </Suspense>
   );
 }

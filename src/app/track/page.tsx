@@ -1,9 +1,17 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { Scale, Search, Loader2, AlertCircle, CheckCircle, Clock, FileText } from "lucide-react";
+import {
+  Scale,
+  Search,
+  Loader2,
+  AlertCircle,
+  CheckCircle,
+  Clock,
+  FileText,
+} from "lucide-react";
 import { MATTER_STAGES, stageStepMap, TOTAL_STAGES } from "@/lib/utils";
 import type { MatterStatus, MatterStage, MatterUrgency } from "@/types";
 
@@ -17,21 +25,48 @@ interface TrackResult {
   lastUpdated: string;
 }
 
-const statusMeta: Record<MatterStatus, { label: string; color: string; desc: string }> = {
-  unassigned:   { label: "Awaiting assignment", color: "text-blue-700 bg-blue-50 border-blue-200",      desc: "Your matter has been received and is being reviewed by our admin team." },
-  assigned:     { label: "Lawyer assigned",     color: "text-amber-700 bg-amber-50 border-amber-200",   desc: "A volunteer lawyer has been assigned and will contact you shortly." },
-  in_progress:  { label: "In progress",         color: "text-purple-700 bg-purple-50 border-purple-200",desc: "Your lawyer is actively working on your matter." },
-  under_review: { label: "Under review",        color: "text-teal-700 bg-teal-50 border-teal-200",     desc: "Your matter is currently under legal review." },
-  completed:    { label: "Completed",           color: "text-green-700 bg-green-50 border-green-200",   desc: "Your matter has been resolved. We hope we were able to help." },
-  archived:     { label: "Archived",            color: "text-gray-600 bg-gray-50 border-gray-200",     desc: "This matter has been archived." },
+const statusMeta: Record<
+  MatterStatus,
+  { label: string; color: string; desc: string }
+> = {
+  unassigned: {
+    label: "Awaiting assignment",
+    color: "text-blue-700 bg-blue-50 border-blue-200",
+    desc: "Your matter has been received and is being reviewed by our admin team.",
+  },
+  assigned: {
+    label: "Lawyer assigned",
+    color: "text-amber-700 bg-amber-50 border-amber-200",
+    desc: "A volunteer lawyer has been assigned and will contact you shortly.",
+  },
+  in_progress: {
+    label: "In progress",
+    color: "text-purple-700 bg-purple-50 border-purple-200",
+    desc: "Your lawyer is actively working on your matter.",
+  },
+  under_review: {
+    label: "Under review",
+    color: "text-teal-700 bg-teal-50 border-teal-200",
+    desc: "Your matter is currently under legal review.",
+  },
+  completed: {
+    label: "Completed",
+    color: "text-green-700 bg-green-50 border-green-200",
+    desc: "Your matter has been resolved. We hope we were able to help.",
+  },
+  archived: {
+    label: "Archived",
+    color: "text-gray-600 bg-gray-50 border-gray-200",
+    desc: "This matter has been archived.",
+  },
 };
 
-export default function TrackPage() {
+function TrackForm() {
   const searchParams = useSearchParams();
-  const [ref, setRef]         = useState(searchParams.get("ref") ?? "");
+  const [ref, setRef] = useState(searchParams.get("ref") ?? "");
   const [loading, setLoading] = useState(false);
-  const [error, setError]     = useState("");
-  const [result, setResult]   = useState<TrackResult | null>(null);
+  const [error, setError] = useState("");
+  const [result, setResult] = useState<TrackResult | null>(null);
 
   useEffect(() => {
     if (searchParams.get("ref")) handleSearch();
@@ -39,12 +74,22 @@ export default function TrackPage() {
 
   async function handleSearch(e?: React.FormEvent) {
     e?.preventDefault();
-    if (!ref.trim()) { setError("Please enter your reference number."); return; }
-    setError(""); setResult(null); setLoading(true);
-    const res  = await fetch("/api/matters/track?ref=" + encodeURIComponent(ref.trim().toUpperCase()));
+    if (!ref.trim()) {
+      setError("Please enter your reference number.");
+      return;
+    }
+    setError("");
+    setResult(null);
+    setLoading(true);
+    const res = await fetch(
+      "/api/matters/track?ref=" + encodeURIComponent(ref.trim().toUpperCase()),
+    );
     const data = await res.json();
     setLoading(false);
-    if (!res.ok) { setError(data.error); return; }
+    if (!res.ok) {
+      setError(data.error);
+      return;
+    }
     setResult(data);
   }
 
@@ -59,7 +104,7 @@ export default function TrackPage() {
               <Scale className="w-4 h-4 text-brand-100" />
             </div>
             <span className="text-sm font-semibold text-gray-900">
-              HUMRI
+              Lex Gratis
             </span>
           </Link>
           <Link
@@ -261,5 +306,13 @@ export default function TrackPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function TrackPage() {
+  return (
+    <Suspense>
+      <TrackForm />
+    </Suspense>
   );
 }
