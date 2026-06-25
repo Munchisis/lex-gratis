@@ -1,25 +1,35 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { Loader2, CheckCircle, ArrowRight, Filter } from "lucide-react";
-import { statusStyles, statusLabels, urgencyStyles, urgencyLabels, stageStepMap, MATTER_STAGES, TOTAL_STAGES } from "@/lib/utils";
+import { Loader2, CheckCircle } from "lucide-react";
+import {
+  statusStyles,
+  statusLabels,
+  urgencyStyles,
+  urgencyLabels,
+  stageStepMap,
+  MATTER_STAGES,
+  TOTAL_STAGES,
+} from "@/lib/utils";
 import type { IMatter, MatterStatus, MatterStage } from "@/types";
 
 export default function LawyerMattersPage() {
   const [matters, setMatters] = useState<IMatter[]>([]);
   const [loading, setLoading] = useState(true);
-  const [tab, setTab]         = useState<"active" | "completed">("active");
+  const [tab, setTab] = useState<"active" | "completed">("active");
   const [updating, setUpdating] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
-    const res  = await fetch("/api/matters?limit=100");
+    const res = await fetch("/api/matters?limit=100");
     const data = await res.json();
     setMatters(data.matters ?? []);
     setLoading(false);
   }, []);
 
-  useEffect(() => { load(); }, [load]);
+  useEffect(() => {
+    load();
+  }, [load]);
 
   async function updateStage(matterId: string, stage: MatterStage) {
     setUpdating(matterId);
@@ -43,8 +53,10 @@ export default function LawyerMattersPage() {
     load();
   }
 
-  const active    = matters.filter(m => m.status !== "completed" && m.status !== "archived");
-  const completed = matters.filter(m => m.status === "completed");
+  const active = matters.filter(
+    (m) => m.status !== "completed" && m.status !== "archived",
+  );
+  const completed = matters.filter((m) => m.status === "completed");
   const displayed = tab === "active" ? active : completed;
 
   return (
@@ -59,12 +71,19 @@ export default function LawyerMattersPage() {
       {/* Tabs */}
       <div className="flex gap-2 mb-6">
         {[
-          { key: "active",    label: `Active (${active.length})`       },
+          { key: "active", label: `Active (${active.length})` },
           { key: "completed", label: `Completed (${completed.length})` },
         ].map(({ key, label }) => (
-          <button key={key}
+          <button
+            key={key}
             onClick={() => setTab(key as typeof tab)}
-            className={"px-4 py-2 rounded-lg text-sm font-medium transition-all " + (tab === key ? "bg-gray-900 text-white" : "bg-white border border-gray-200 text-gray-600 hover:bg-gray-50")}>
+            className={
+              "px-4 py-2 rounded-lg text-sm font-medium transition-all " +
+              (tab === key
+                ? "bg-gray-900 text-white"
+                : "bg-white border border-gray-200 text-gray-600 hover:bg-gray-50")
+            }
+          >
             {label}
           </button>
         ))}
@@ -77,14 +96,16 @@ export default function LawyerMattersPage() {
       ) : displayed.length === 0 ? (
         <div className="card text-center py-16">
           <p className="text-sm text-gray-400">
-            {tab === "active" ? "No active matters assigned to you." : "No completed matters yet."}
+            {tab === "active"
+              ? "No active matters assigned to you."
+              : "No completed matters yet."}
           </p>
         </div>
       ) : (
         <div className="space-y-4">
           {displayed.map((m) => {
+            const stage = m.stage as string;
             const step = stageStepMap[m.stage as MatterStage] ?? 1;
-            const pct  = Math.round((step / TOTAL_STAGES) * 100);
             const isUpdating = updating === m._id;
 
             return (
@@ -114,10 +135,10 @@ export default function LawyerMattersPage() {
                       <span
                         className={
                           "badge text-xs " +
-                          urgencyStyles[m.urgency as keyof typeof urgencyStyles]
+                          urgencyStyles[m.urgency as MatterUrgency]
                         }
                       >
-                        {urgencyLabels[m.urgency as keyof typeof urgencyLabels]}
+                        {urgencyLabels[m.urgency as MatterUrgency]}
                       </span>
                     )}
                     <span
@@ -142,10 +163,9 @@ export default function LawyerMattersPage() {
                     <div className="mb-4">
                       <div className="flex justify-between text-xs text-gray-400 mb-1.5">
                         <span>
-                          {MATTER_STAGES.find((s) => s.value === m.stage)
-                            ?.label ?? m.stage}
+                          {MATTER_STAGES.find((s) => s.value === stage)
+                            ?.label ?? stage}
                         </span>
-
                         <span>
                           {step} / {TOTAL_STAGES}
                         </span>
@@ -175,7 +195,7 @@ export default function LawyerMattersPage() {
                         </span>
                         <select
                           className="input py-1 text-xs w-44"
-                          value={m.stage}
+                          value={stage}
                           disabled={isUpdating}
                           onChange={(e) =>
                             updateStage(m._id, e.target.value as MatterStage)
