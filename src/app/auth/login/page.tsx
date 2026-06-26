@@ -48,11 +48,17 @@ function LoginForm() {
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <div className="flex items-center gap-3 justify-center mb-8">
-          <Link href="/" className="w-10 h-10 bg-brand-800 rounded-xl flex items-center justify-center">
+          <Link
+            href="/"
+            className="w-10 h-10 bg-brand-800 rounded-xl flex items-center justify-center"
+          >
             <Scale className="w-5 h-5 text-brand-100" />
           </Link>
           <div>
-            <Link href="/" className="text-lg font-semibold text-gray-900 leading-none">
+            <Link
+              href="/"
+              className="text-lg font-semibold text-gray-900 leading-none"
+            >
               HumRi
             </Link>
             <div className="text-xs text-gray-400 tracking-wide uppercase mt-0.5">
@@ -79,7 +85,9 @@ function LoginForm() {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="label">Email address</label>
+              <label className="label">
+                Email address<span className="text-red-500">*</span>
+              </label>
               <input
                 type="email"
                 className="input"
@@ -91,7 +99,9 @@ function LoginForm() {
               />
             </div>
             <div>
-              <label className="label">Password</label>
+              <label className="label">
+                Password <span className="text-red-500">*</span>
+              </label>
               <input
                 type="password"
                 className="input"

@@ -130,7 +130,9 @@ export default function RegisterPage() {
             {/* Personal info */}
             <div className="grid grid-cols-2 gap-3">
               <div className="col-span-2">
-                <label className="label">Full name</label>
+                <label className="label">
+                  Full name<span className="text-red-500">*</span>
+                </label>
                 <input
                   className="input"
                   placeholder="Chidi Okoro"
@@ -140,7 +142,9 @@ export default function RegisterPage() {
                 />
               </div>
               <div className="col-span-2">
-                <label className="label">Email address</label>
+                <label className="label">
+                  Email address<span className="text-red-500">*</span>
+                </label>
                 <input
                   type="email"
                   className="input"
@@ -151,7 +155,9 @@ export default function RegisterPage() {
                 />
               </div>
               <div>
-                <label className="label">Password</label>
+                <label className="label">
+                  Password<span className="text-red-500">*</span>
+                </label>
                 <input
                   type="password"
                   className="input"
@@ -162,7 +168,9 @@ export default function RegisterPage() {
                 />
               </div>
               <div>
-                <label className="label">Confirm password</label>
+                <label className="label">
+                  Confirm password <span className="text-red-500">*</span>
+                </label>
                 <input
                   type="password"
                   className="input"
@@ -176,11 +184,13 @@ export default function RegisterPage() {
 
             <div className="border-t border-gray-100 pt-4">
               <p className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-3">
-                Professional details
+                Professional details <span className="text-red-500">*</span>
               </p>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="label">SCN number</label>
+                  <label className="label">
+                    SCN number <span className="text-red-500">*</span>
+                  </label>
                   <input
                     className="input"
                     placeholder="e.g. SCN 123456"
@@ -190,7 +200,9 @@ export default function RegisterPage() {
                   />
                 </div>
                 <div>
-                  <label className="label">State</label>
+                  <label className="label">
+                    Jurisdiction<span className="text-red-500">*</span>
+                  </label>
                   <select
                     className="input"
                     required
@@ -206,7 +218,10 @@ export default function RegisterPage() {
                   </select>
                 </div>
                 <div className="col-span-2">
-                  <label className="label">Area of specialisation</label>
+                  <label className="label">
+                    Area of specialisation{" "}
+                    <span className="text-red-500">*</span>
+                  </label>
                   <select
                     className="input"
                     required
