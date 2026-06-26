@@ -1,26 +1,37 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { Loader2, CheckCircle, ArrowRight, Filter } from "lucide-react";
-import { statusStyles, statusLabels, urgencyStyles, urgencyLabels, stageStepMap, MATTER_STAGES, TOTAL_STAGES } from "@/lib/utils";
-import { MATTER_TYPES } from "@/types";
+import { Loader2, CheckCircle } from "lucide-react";
+import {
+  statusStyles,
+  statusLabels,
+  urgencyStyles,
+  urgencyLabels,
+  stageStepMap,
+  MATTER_STAGES,
+  TOTAL_STAGES,
+} from "@/lib/utils";
 import type { IMatter, MatterStatus, MatterStage } from "@/types";
+
+type Tab = "active" | "pool" | "completed";
 
 export default function LawyerMattersPage() {
   const [matters, setMatters] = useState<IMatter[]>([]);
   const [loading, setLoading] = useState(true);
-  const [tab, setTab]         = useState<"active" | "completed">("active");
+  const [tab, setTab] = useState<Tab>("active");
   const [updating, setUpdating] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
-    const res  = await fetch("/api/matters?limit=100");
+    const res = await fetch("/api/matters?limit=100");
     const data = await res.json();
     setMatters(data.matters ?? []);
     setLoading(false);
   }, []);
 
-  useEffect(() => { load(); }, [load]);
+  useEffect(() => {
+    load();
+  }, [load]);
 
   async function updateStage(matterId: string, stage: MatterStage) {
     setUpdating(matterId);
@@ -44,28 +55,61 @@ export default function LawyerMattersPage() {
     load();
   }
 
-  const active    = matters.filter(m => m.status !== "completed" && m.status !== "archived");
-  const completed = matters.filter(m => m.status === "completed");
-  const displayed = tab === "active" ? active : completed;
+  async function claimMatter(matterId: string) {
+    setUpdating(matterId);
+    await fetch(`/api/matters/${matterId}/claim`, { method: "POST" });
+    setUpdating(null);
+    load();
+  }
+
+  const myMatters = matters.filter(
+    (m) =>
+      m.status !== "unassigned" &&
+      m.status !== "completed" &&
+      m.status !== "archived",
+  );
+  const openPool = matters.filter((m) => m.status === "unassigned");
+  const completed = matters.filter((m) => m.status === "completed");
+
+  const displayed =
+    tab === "active" ? myMatters : tab === "pool" ? openPool : completed;
+
+  const emptyMessage =
+    tab === "active"
+      ? "No active matters assigned to you."
+      : tab === "pool"
+        ? "No open matters available right now."
+        : "No completed matters yet.";
 
   return (
     <div>
       <div className="mb-6">
         <h1 className="text-xl font-medium">My matters</h1>
         <p className="text-sm text-gray-500 mt-1">
-          {active.length} active · {completed.length} completed
+          {myMatters.length} active · {openPool.length} open ·{" "}
+          {completed.length} completed
         </p>
       </div>
 
       {/* Tabs */}
       <div className="flex gap-2 mb-6">
-        {[
-          { key: "active",    label: `Active (${active.length})`       },
-          { key: "completed", label: `Completed (${completed.length})` },
-        ].map(({ key, label }) => (
-          <button key={key}
-            onClick={() => setTab(key as typeof tab)}
-            className={"px-4 py-2 rounded-lg text-sm font-medium transition-all " + (tab === key ? "bg-gray-900 text-white" : "bg-white border border-gray-200 text-gray-600 hover:bg-gray-50")}>
+        {(
+          [
+            { key: "active", label: `My matters (${myMatters.length})` },
+            { key: "pool", label: `Open pool (${openPool.length})` },
+            { key: "completed", label: `Completed (${completed.length})` },
+          ] as { key: Tab; label: string }[]
+        ).map(({ key, label }) => (
+          <button
+            key={key}
+            onClick={() => setTab(key)}
+            className={
+              "px-4 py-2 rounded-lg text-sm font-medium transition-all " +
+              (tab === key
+                ? "bg-gray-900 text-white"
+                : "bg-white border border-gray-200 text-gray-600 hover:bg-gray-50")
+            }
+          >
             {label}
           </button>
         ))}
@@ -77,15 +121,13 @@ export default function LawyerMattersPage() {
         </div>
       ) : displayed.length === 0 ? (
         <div className="card text-center py-16">
-          <p className="text-sm text-gray-400">
-            {tab === "active" ? "No active matters assigned to you." : "No completed matters yet."}
-          </p>
+          <p className="text-sm text-gray-400">{emptyMessage}</p>
         </div>
       ) : (
         <div className="space-y-4">
           {displayed.map((m) => {
-            const step = stageStepMap[m.stage as MatterStage] ?? 1;
-            const pct  = Math.round((step / TOTAL_STAGES) * 100);
+            const stage = m.stage as string;
+            const step = stageStepMap[stage] ?? 1;
             const isUpdating = updating === m._id;
 
             return (
@@ -99,18 +141,27 @@ export default function LawyerMattersPage() {
                     <div className="text-xs text-gray-400 mt-0.5 flex items-center gap-2">
                       <span className="font-mono">{m.referenceNumber}</span>
                       <span>·</span>
-                      <span className="capitalize">{m.type.replace(/_/g, " ")}</span>
-                      {m.client.state && <><span>·</span><span>{m.client.state}</span></>}
+                      <span className="capitalize">
+                        {m.type.replace(/_/g, " ")}
+                      </span>
+                      {m.client.state && (
+                        <>
+                          <span>·</span>
+                          <span>{m.client.state}</span>
+                        </>
+                      )}
                     </div>
                   </div>
                   <div className="flex items-center gap-2 shrink-0">
                     {m.urgency !== "normal" && (
-                      <span className={"badge text-xs " + urgencyStyles[m.urgency as keyof typeof urgencyStyles]}>
-                        {urgencyLabels[m.urgency as keyof typeof urgencyLabels]}
+                      <span
+                        className={"badge text-xs " + urgencyStyles[m.urgency]}
+                      >
+                        {urgencyLabels[m.urgency]}
                       </span>
                     )}
-                    <span className={"badge text-xs " + statusStyles[m.status as MatterStatus]}>
-                      {statusLabels[m.status as MatterStatus]}
+                    <span className={"badge text-xs " + statusStyles[m.status]}>
+                      {statusLabels[m.status]}
                     </span>
                   </div>
                 </div>
@@ -120,55 +171,114 @@ export default function LawyerMattersPage() {
                   {m.description}
                 </p>
 
-                {/* Progress */}
+                {/* Active matter — stage progress + actions */}
                 {tab === "active" && (
                   <>
                     <div className="mb-4">
                       <div className="flex justify-between text-xs text-gray-400 mb-1.5">
-                        <span>{MATTER_STAGES.find(s => s.value === m.stage)?.label ?? m.stage}</span>
-                        <span>{step} / {TOTAL_STAGES}</span>
+                        <span>
+                          {MATTER_STAGES.find((s) => s.value === stage)
+                            ?.label ?? stage}
+                        </span>
+                        <span>
+                          {step} / {TOTAL_STAGES}
+                        </span>
                       </div>
                       <div className="flex gap-1">
                         {MATTER_STAGES.map(({ value, step: s }) => (
-                          <div key={value}
-                            className={"flex-1 h-1.5 rounded-full " + (s < step ? "bg-brand-600" : s === step ? "bg-brand-300" : "bg-gray-100")} />
+                          <div
+                            key={value}
+                            className={
+                              "flex-1 h-1.5 rounded-full " +
+                              (s < step
+                                ? "bg-brand-600"
+                                : s === step
+                                  ? "bg-brand-300"
+                                  : "bg-gray-100")
+                            }
+                          />
                         ))}
                       </div>
                     </div>
-
-                    {/* Actions */}
                     <div className="flex items-center gap-3 flex-wrap pt-3 border-t border-gray-100">
                       <div className="flex items-center gap-2">
-                        <span className="text-xs text-gray-500 shrink-0">Update stage:</span>
+                        <span className="text-xs text-gray-500 shrink-0">
+                          Update stage:
+                        </span>
                         <select
                           className="input py-1 text-xs w-44"
-                          value={m.stage}
+                          value={stage}
                           disabled={isUpdating}
-                          onChange={(e) => updateStage(m._id, e.target.value as MatterStage)}>
-                          {MATTER_STAGES.filter(s => s.value !== "completed").map(({ value, label }) => (
-                            <option key={value} value={value}>{label}</option>
+                          onChange={(e) =>
+                            updateStage(m._id, e.target.value as MatterStage)
+                          }
+                        >
+                          {MATTER_STAGES.filter(
+                            (s) => s.value !== "completed",
+                          ).map(({ value, label }) => (
+                            <option key={value} value={value}>
+                              {label}
+                            </option>
                           ))}
                         </select>
                       </div>
                       <button
                         onClick={() => markComplete(m._id)}
                         disabled={isUpdating}
-                        className="btn btn-primary text-xs gap-1.5 ml-auto">
-                        {isUpdating
-                          ? <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                          : <CheckCircle className="w-3.5 h-3.5" />}
+                        className="btn btn-primary text-xs gap-1.5 ml-auto"
+                      >
+                        {isUpdating ? (
+                          <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                        ) : (
+                          <CheckCircle className="w-3.5 h-3.5" />
+                        )}
                         Mark complete
                       </button>
                     </div>
                   </>
                 )}
 
+                {/* Open pool — claim button */}
+                {tab === "pool" && (
+                  <div className="flex items-center justify-between pt-3 border-t border-gray-100">
+                    <span className="text-xs text-gray-400">
+                      {m.urgency === "critical"
+                        ? "⚡ Requires immediate attention"
+                        : m.urgency === "urgent"
+                          ? "🕐 Has an upcoming deadline"
+                          : "No immediate deadline"}
+                    </span>
+                    <button
+                      onClick={() => claimMatter(m._id)}
+                      disabled={isUpdating}
+                      className="btn btn-primary text-xs gap-1.5"
+                    >
+                      {isUpdating ? (
+                        <>
+                          <Loader2 className="w-3.5 h-3.5 animate-spin" />{" "}
+                          Claiming…
+                        </>
+                      ) : (
+                        "Accept matter"
+                      )}
+                    </button>
+                  </div>
+                )}
+
+                {/* Completed */}
                 {tab === "completed" && (
                   <div className="flex items-center gap-2 pt-3 border-t border-gray-100">
                     <CheckCircle className="w-4 h-4 text-green-600" />
-                    <span className="text-xs text-green-700 font-medium">Resolved</span>
+                    <span className="text-xs text-green-700 font-medium">
+                      Resolved
+                    </span>
                     <span className="text-xs text-gray-400 ml-auto">
-                      Last updated {new Date(m.updatedAt).toLocaleDateString("en-NG", { day:"numeric", month:"short", year:"numeric" })}
+                      Last updated{" "}
+                      {new Date(m.updatedAt).toLocaleDateString("en-NG", {
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric",
+                      })}
                     </span>
                   </div>
                 )}

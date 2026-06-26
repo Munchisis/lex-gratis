@@ -102,7 +102,10 @@ export async function GET(req: NextRequest) {
 
     if (session.user.role === "lawyer") {
       // Lawyers only see their own matters
-      query.assignedLawyer = new mongoose.Types.ObjectId(session.user.id);
+      query.$or = [
+        { assignedLawyer: new mongoose.Types.ObjectId(session.user.id) },
+        { status: "unassigned" },
+      ];
     }
 
     if (status)  query.status  = status;
