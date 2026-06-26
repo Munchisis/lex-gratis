@@ -6,6 +6,8 @@ import Matter from "@/models/Matter";
 import { authOptions } from "@/lib/auth";
 import { generateReferenceNumber } from "@/lib/utils";
 import mongoose from "mongoose";
+import { sendMatterSubmitted, sendAdminNewMatter } from "@/lib/email";
+import User from "@/models/User";
 
 // ─── Submit a matter (public — no auth required) ──────────────────────────────
 
@@ -61,6 +63,33 @@ export async function POST(req: NextRequest) {
       status: "unassigned",
       stage:  "intake",
     });
+
+
+console.log("[EMAIL] Attempting to send to:", email);
+try {
+  await sendMatterSubmitted({
+    clientName:      `${firstName} ${lastName}`,
+    clientEmail:     email,
+    referenceNumber: matter.referenceNumber,
+    matterType:      type.replace(/_/g, " "),
+  });
+
+  // notify all admins
+  const admins = await User.find({ role: "admin" }).select("email").lean();
+  await Promise.all(admins.map(a =>
+    sendAdminNewMatter({
+      adminEmail:      a.email,
+      referenceNumber: matter.referenceNumber,
+      clientName:      `${firstName} ${lastName}`,
+      matterType:      type.replace(/_/g, " "),
+      urgency,
+    })
+    
+  ));
+  console.log("[EMAIL] Sent successfully");
+} catch (err) {
+  console.error("[EMAIL] failed:", err); // don't block the response if email fails
+}
 
     return NextResponse.json(
       {

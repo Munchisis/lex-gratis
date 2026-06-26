@@ -5,12 +5,13 @@ import { connectDB } from "@/lib/db";
 import Matter from "@/models/Matter";
 import User from "@/models/User";
 import { authOptions } from "@/lib/auth";
+import { sendMatterCompleted } from "@/lib/email";
 
 // ─── Get single matter ────────────────────────────────────────────────────────
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: { id: string } },
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -39,7 +40,10 @@ export async function GET(
     return NextResponse.json({ matter });
   } catch (err) {
     console.error("[MATTER GET]", err);
-    return NextResponse.json({ error: "Failed to fetch matter." }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to fetch matter." },
+      { status: 500 },
+    );
   }
 }
 
@@ -47,14 +51,34 @@ export async function GET(
 
 const UpdateSchema = z.object({
   assignedLawyer: z.string().optional(),
-  status:         z.enum(["unassigned","assigned","in_progress","under_review","completed","archived"]).optional(),
-  stage:          z.enum(["intake","client_consultation","document_review","filing","negotiation","hearing","awaiting_judgment","completed"]).optional(),
-  note:           z.string().min(1).max(1000).optional(),
+  status: z
+    .enum([
+      "unassigned",
+      "assigned",
+      "in_progress",
+      "under_review",
+      "completed",
+      "archived",
+    ])
+    .optional(),
+  stage: z
+    .enum([
+      "intake",
+      "client_consultation",
+      "document_review",
+      "filing",
+      "negotiation",
+      "hearing",
+      "awaiting_judgment",
+      "completed",
+    ])
+    .optional(),
+  note: z.string().min(1).max(1000).optional(),
 });
 
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: { id: string } },
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -68,7 +92,7 @@ export async function PATCH(
     if (!parsed.success) {
       return NextResponse.json(
         { error: parsed.error.errors[0].message },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -84,7 +108,10 @@ export async function PATCH(
     // Only admins can assign lawyers or change assignment
     if (assignedLawyer !== undefined) {
       if (session.user.role !== "admin") {
-        return NextResponse.json({ error: "Only admins can assign lawyers." }, { status: 403 });
+        return NextResponse.json(
+          { error: "Only admins can assign lawyers." },
+          { status: 403 },
+        );
       }
 
       // Decrement old lawyer's active count
@@ -94,7 +121,8 @@ export async function PATCH(
         });
       }
 
-      matter.assignedLawyer = assignedLawyer as unknown as typeof matter.assignedLawyer;
+      matter.assignedLawyer =
+        assignedLawyer as unknown as typeof matter.assignedLawyer;
       matter.status = "assigned";
 
       // Increment new lawyer's active count
@@ -105,14 +133,29 @@ export async function PATCH(
 
     // Lawyers can update status and stage for their own matters; admins can do either
     if (status !== undefined) {
-      if (session.user.role === "lawyer" &&
-          matter.assignedLawyer?.toString() !== session.user.id) {
+      if (
+        session.user.role === "lawyer" &&
+        matter.assignedLawyer?.toString() !== session.user.id
+      ) {
         return NextResponse.json({ error: "Forbidden" }, { status: 403 });
       }
       matter.status = status;
 
       if (status === "completed") {
         matter.stage = "completed";
+        try {
+          const lawyer = await User.findById(session.user.id)
+            .select("name")
+            .lean();
+          await sendMatterCompleted({
+            clientName: `${matter.client.firstName} ${matter.client.lastName}`,
+            clientEmail: matter.client.email,
+            referenceNumber: matter.referenceNumber,
+            lawyerName: lawyer?.name ?? "Your lawyer",
+          });
+        } catch (err) {
+          console.error("[EMAIL]", err);
+        }
         // Update lawyer's stats
         if (matter.assignedLawyer) {
           await User.findByIdAndUpdate(matter.assignedLawyer, {
@@ -123,14 +166,17 @@ export async function PATCH(
     }
 
     if (stage !== undefined) {
-      if (session.user.role === "lawyer" &&
-          matter.assignedLawyer?.toString() !== session.user.id) {
+      if (
+        session.user.role === "lawyer" &&
+        matter.assignedLawyer?.toString() !== session.user.id
+      ) {
         return NextResponse.json({ error: "Forbidden" }, { status: 403 });
       }
       matter.stage = stage;
       matter.stageHistory.push({
         stage,
-        changedBy: session.user.id as unknown as typeof matter.stageHistory[0]["changedBy"],
+        changedBy: session.user
+          .id as unknown as (typeof matter.stageHistory)[0]["changedBy"],
         changedAt: new Date(),
       });
 
@@ -144,10 +190,11 @@ export async function PATCH(
     // Both roles can add notes to matters they're involved in
     if (note !== undefined) {
       matter.notes.push({
-        author:     session.user.id as unknown as typeof matter.notes[0]["author"],
+        author: session.user
+          .id as unknown as (typeof matter.notes)[0]["author"],
         authorName: session.user.name ?? "Unknown",
-        content:    note,
-        createdAt:  new Date(),
+        content: note,
+        createdAt: new Date(),
       });
     }
 
@@ -159,6 +206,9 @@ export async function PATCH(
     });
   } catch (err) {
     console.error("[MATTER PATCH]", err);
-    return NextResponse.json({ error: "Failed to update matter." }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to update matter." },
+      { status: 500 },
+    );
   }
 }

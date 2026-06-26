@@ -5,6 +5,7 @@ import { connectDB } from "@/lib/db";
 import Matter from "@/models/Matter";
 import User from "@/models/User";
 import mongoose from "mongoose";
+import { sendLawyerAssigned } from "@/lib/email";
 
 export async function POST(
   req: NextRequest,
@@ -33,6 +34,19 @@ export async function POST(
   matter.status = "assigned";
   matter.stage  = "client_consultation";
   await matter.save();
+
+  try {
+  const lawyer = await User.findById(session.user.id).select("name specialisation").lean();
+  await sendLawyerAssigned({
+    clientName:           `${matter.client.firstName} ${matter.client.lastName}`,
+    clientEmail:          matter.client.email,
+    referenceNumber:      matter.referenceNumber,
+    lawyerName:           lawyer?.name ?? "Your lawyer",
+    lawyerSpecialisation: lawyer?.specialisation ?? "",
+  });
+} catch (err) {
+  console.error("[EMAIL]", err);
+}
 
   await User.findByIdAndUpdate(session.user.id, {
     $inc: { activeMatters: 1 },

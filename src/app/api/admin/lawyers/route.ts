@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { connectDB } from "@/lib/db";
 import User from "@/models/User";
+import { sendLawyerApproved } from "@/lib/email";
 
 // ─── List all lawyers (admin only) ───────────────────────────────────────────
 
@@ -52,6 +53,17 @@ export async function PATCH(req: NextRequest) {
     { isApproved },
     { new: true, select: "-password" }
   );
+
+  if (isApproved && lawyer) {
+    try {
+      await sendLawyerApproved({
+        lawyerName: lawyer.name,
+        lawyerEmail: lawyer.email,
+      });
+    } catch (err) {
+      console.error("[EMAIL]", err);
+    }
+  }
 
   if (!lawyer) {
     return NextResponse.json({ error: "Lawyer not found." }, { status: 404 });
