@@ -140,7 +140,9 @@ export default function SubmitPage() {
             </h2>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="label">First name</label>
+                <label className="label">
+                  First name <span className="text-red-500">*</span>
+                </label>
                 <input
                   className="input"
                   placeholder="Amaka"
@@ -150,7 +152,9 @@ export default function SubmitPage() {
                 />
               </div>
               <div>
-                <label className="label">Last name</label>
+                <label className="label">
+                  Last name <span className="text-red-500">*</span>
+                </label>
                 <input
                   className="input"
                   placeholder="Okafor"
@@ -160,7 +164,9 @@ export default function SubmitPage() {
                 />
               </div>
               <div>
-                <label className="label">Email address</label>
+                <label className="label">
+                  Email address <span className="text-red-500">*</span>
+                </label>
                 <input
                   type="email"
                   className="input"
@@ -180,7 +186,9 @@ export default function SubmitPage() {
                 />
               </div>
               <div>
-                <label className="label">State</label>
+                <label className="label">
+                  State <span className="text-red-500">*</span>
+                </label>
                 <select
                   className="input"
                   value={form.state}
@@ -193,7 +201,7 @@ export default function SubmitPage() {
                 </select>
               </div>
               <div>
-                <label className="label">Preferred language</label>
+                <label className="label">Preferred language (optional)</label>
                 <select
                   className="input"
                   value={form.preferredLanguage}
@@ -212,7 +220,9 @@ export default function SubmitPage() {
               Matter details
             </h2>
             <div className="mb-4">
-              <label className="label mb-2">Matter type</label>
+              <label className="label mb-2">
+                Matter type <span className="text-red-500">*</span>
+              </label>
               <div className="flex flex-wrap gap-2">
                 {MATTER_TYPES.map(({ value, label }) => (
                   <button
@@ -232,7 +242,9 @@ export default function SubmitPage() {
               </div>
             </div>
             <div className="mb-4">
-              <label className="label">Describe your situation</label>
+              <label className="label">
+                Describe your situation <span className="text-red-500">*</span>
+              </label>
               <textarea
                 className="input min-h-[120px]"
                 placeholder="Explain what happened, who is involved, and what outcome you are seeking..."
