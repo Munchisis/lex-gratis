@@ -40,6 +40,7 @@ function LoginForm() {
       const sessionRes = await fetch("/api/auth/session");
       const session = await sessionRes.json();
       const role = session?.user?.role;
+      
       router.push(role === "admin" ? "/admin" : "/lawyer");
     }
   }

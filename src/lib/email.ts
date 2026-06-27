@@ -22,7 +22,7 @@ export async function sendMatterSubmitted({
     html: `
       <div style="font-family:sans-serif;max-width:560px;margin:0 auto;color:#1a1a1a">
         <div style="background:#085041;padding:24px 32px;border-radius:12px 12px 0 0">
-          <h1 style="color:#E1F5EE;font-size:20px;margin:0">Lex Gratis</h1>
+          <h1 style="color:#E1F5EE;font-size:20px;margin:0">HumRi</h1>
           <p style="color:#9FE1CB;font-size:12px;margin:4px 0 0">Pro bono legal aid</p>
         </div>
         <div style="background:#ffffff;padding:32px;border:1px solid #e5e7eb;border-top:none;border-radius:0 0 12px 12px">
@@ -47,7 +47,7 @@ export async function sendMatterSubmitted({
           </a>
           <hr style="border:none;border-top:1px solid #e5e7eb;margin:32px 0">
           <p style="margin:0;font-size:12px;color:#9ca3af">
-            This is an automated message from Lex Gratis. Please do not reply to this email.
+            This is an automated message from Humri. Please do not reply to this email.
           </p>
         </div>
       </div>
@@ -76,7 +76,7 @@ export async function sendLawyerAssigned({
     html: `
       <div style="font-family:sans-serif;max-width:560px;margin:0 auto;color:#1a1a1a">
         <div style="background:#085041;padding:24px 32px;border-radius:12px 12px 0 0">
-          <h1 style="color:#E1F5EE;font-size:20px;margin:0">Lex Gratis</h1>
+          <h1 style="color:#E1F5EE;font-size:20px;margin:0">HumRi</h1>
           <p style="color:#9FE1CB;font-size:12px;margin:4px 0 0">Pro bono legal aid</p>
         </div>
         <div style="background:#ffffff;padding:32px;border:1px solid #e5e7eb;border-top:none;border-radius:0 0 12px 12px">
@@ -100,7 +100,7 @@ export async function sendLawyerAssigned({
           </a>
           <hr style="border:none;border-top:1px solid #e5e7eb;margin:32px 0">
           <p style="margin:0;font-size:12px;color:#9ca3af">
-            This is an automated message from Lex Gratis. Please do not reply to this email.
+            This is an automated message from HumRi. Please do not reply to this email.
           </p>
         </div>
       </div>
@@ -127,7 +127,7 @@ export async function sendMatterCompleted({
     html: `
       <div style="font-family:sans-serif;max-width:560px;margin:0 auto;color:#1a1a1a">
         <div style="background:#085041;padding:24px 32px;border-radius:12px 12px 0 0">
-          <h1 style="color:#E1F5EE;font-size:20px;margin:0">Lex Gratis</h1>
+          <h1 style="color:#E1F5EE;font-size:20px;margin:0">HumRi</h1>
           <p style="color:#9FE1CB;font-size:12px;margin:4px 0 0">Pro bono legal aid</p>
         </div>
         <div style="background:#ffffff;padding:32px;border:1px solid #e5e7eb;border-top:none;border-radius:0 0 12px 12px">
