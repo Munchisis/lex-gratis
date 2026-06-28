@@ -16,7 +16,7 @@ export default function HomePage() {
           <div className="flex items-center gap-2.5">
             <Link
               href="/"
-              className="w-8 h-8 bg-brand-800 rounded-lg flex items-center justify-center"
+              className=" hidden w-8 h-8 bg-brand-800 rounded-lg sm:flex items-center justify-center"
             >
               <Scale className="w-4 h-4 text-brand-100" />
             </Link>
@@ -27,7 +27,9 @@ export default function HomePage() {
               >
                 HUMRI
               </Link>
-              <div className="text-xs text-gray-400 mt-0.5">legal aid</div>
+              <div className="hidden md:block text-xs text-gray-400 mt-0.5">
+                legal aid
+              </div>
             </div>
           </div>
           <div className="flex items-center gap-3">
@@ -46,7 +48,7 @@ export default function HomePage() {
             </Link>
             <Link
               href="/submit"
-              className="btn btn-primary text-sm py-1.5 px-4"
+              className="hidden sm:block btn btn-primary text-sm py-1.5 px-4"
             >
               Get legal help
             </Link>
@@ -211,8 +213,8 @@ export default function HomePage() {
 
       {/* Footer */}
       <footer className="border-t border-gray-100 bg-gray-50 dark:bg-gray-900 dark:border-gray-800">
-        <div className="max-w-5xl mx-auto px-4 py-8 flex items-center justify-between text-xs text-gray-400">
-          <div className="flex items-center gap-2">
+        <div className="max-w-5xl mx-auto px-4 py-8 flex items-center sm:justify-between text-xs text-gray-400">
+          <div className="hidden sm:flex items-center gap-2">
             <Scale className="w-4 h-4" />
             <span>HUMRI — Pro Bono Legal Aid Nigeria</span>
           </div>
