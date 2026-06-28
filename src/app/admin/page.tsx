@@ -47,9 +47,9 @@ export default async function AdminDashboard() {
   ];
 
   return (
-    <div>
+    <div className="dark:bg-gray-900 p-4">
       <div className="mb-6">
-        <h1 className="text-xl font-medium text-gray-900">
+        <h1 className="text-xl font-medium text-gray-900 dark:text-gray-200">
           Good morning, {session?.user.name?.split(" ")[0]}
         </h1>
         <p className="text-sm text-gray-500 mt-1">
@@ -61,17 +61,17 @@ export default async function AdminDashboard() {
       {stats.pending > 0 && (
         <Link
           href="/admin/lawyers?tab=pending"
-          className="flex items-center justify-between bg-amber-50 border border-amber-200 rounded-xl px-5 py-3.5 mb-6 hover:bg-amber-100 transition-colors"
+          className="flex items-center justify-between bg-amber-50 border border-amber-200 rounded-xl px-5 py-3.5 mb-6 hover:bg-amber-100 transition-colors dark:bg-transparent dark:border-brand-600"
         >
           <div className="flex items-center gap-3">
-            <UserCheck className="w-5 h-5 text-amber-600 shrink-0" />
-            <span className="text-sm font-medium text-amber-800">
+            <UserCheck className="w-5 h-5 text-amber-600 shrink-0 dark:text-brand-100" />
+            <span className="text-sm font-medium text-amber-800 dark:text-gray-400">
               {stats.pending} lawyer{" "}
               {stats.pending === 1 ? "application" : "applications"} pending
               your approval
             </span>
           </div>
-          <ArrowRight className="w-4 h-4 text-amber-600" />
+          <ArrowRight className="w-4 h-4 text-amber-600 dark:text-brand-100" />
         </Link>
       )}
 
@@ -80,12 +80,16 @@ export default async function AdminDashboard() {
         {statCards.map(({ label, value, icon: Icon, color, bg }) => (
           <div key={label} className="stat-card">
             <div
-              className={`w-8 h-8 ${bg} rounded-lg flex items-center justify-center mb-3`}
+              className={`w-8 h-8 ${bg} rounded-lg flex items-center justify-center mb-3  dark:bg-brand-600 `}
             >
-              <Icon className={`w-4 h-4 ${color}`} />
+              <Icon className={`w-4 h-4 ${color} dark:text-gray-200`} />
             </div>
-            <div className="text-2xl font-semibold text-gray-900">{value}</div>
-            <div className="text-xs text-gray-500 mt-0.5">{label}</div>
+            <div className="text-2xl font-semibold text-gray-900 dark:text-gray-200">
+              {value}
+            </div>
+            <div className="text-xs text-gray-500 mt-0.5 dark:text-gray-400">
+              {label}
+            </div>
           </div>
         ))}
       </div>
@@ -96,14 +100,14 @@ export default async function AdminDashboard() {
           <h2 className="text-base font-medium">Recent matters</h2>
           <Link
             href="/admin/matters"
-            className="text-xs text-brand-600 hover:underline flex items-center gap-1"
+            className="text-xs text-brand-600 hover:underline flex items-center gap-1 dark:text-gray-300"
           >
             View all <ArrowRight className="w-3 h-3" />
           </Link>
         </div>
-        <div className="divide-y divide-gray-50">
+        <div className="divide-y divide-gray-50 dark:divide-gray-500">
           {recent.length === 0 && (
-            <p className="text-sm text-gray-400 py-4 text-center">
+            <p className="text-sm text-gray-400 py-4 text-center dark:text-gray-300">
               No matters yet.
             </p>
           )}
@@ -113,7 +117,7 @@ export default async function AdminDashboard() {
               className="py-3 flex items-center justify-between gap-4"
             >
               <div className="min-w-0">
-                <div className="text-sm font-medium text-gray-900 truncate">
+                <div className="text-sm font-medium text-gray-900 truncate dark:text-gray-300">
                   {m.client.firstName} {m.client.lastName}
                 </div>
                 <div className="text-xs text-gray-400 mt-0.5">

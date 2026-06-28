@@ -154,7 +154,7 @@ export default function MatterPoolPage() {
               >
                 <div className="flex items-start justify-between gap-4 mb-3">
                   <div>
-                    <div className="font-medium text-gray-900">
+                    <div className="font-medium text-gray-900 dark:text-gray-200 ">
                       {m.client.firstName} {m.client.lastName.charAt(0)}.
                     </div>
                     <div className="text-xs text-gray-400 mt-0.5 flex items-center gap-2">
@@ -192,7 +192,7 @@ export default function MatterPoolPage() {
                   {m.description}
                 </p>
 
-                <div className="flex items-center justify-between pt-3 border-t border-gray-100">
+                <div className="flex items-center justify-between pt-3 border-t border-gray-100  dark:border-gray-600">
                   <span className="text-xs text-gray-400">
                     {m.urgency === "critical"
                       ? "⚡ Requires immediate attention"

@@ -74,9 +74,15 @@ export default function AdminMattersPage() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-xl font-medium">All matters</h1>
-          <p className="text-sm text-gray-500 mt-1">{matters.length} total · {matters.filter(m => m.status === "unassigned").length} unassigned</p>
+          <p className="text-sm text-gray-500 mt-1">
+            {matters.length} total ·{" "}
+            {matters.filter((m) => m.status === "unassigned").length} unassigned
+          </p>
         </div>
-        <button onClick={load} className="btn gap-2 text-sm">
+        <button
+          onClick={load}
+          className="btn gap-2 text-sm dark:hover:text-gray-600"
+        >
           <RefreshCw className="w-4 h-4" /> Refresh
         </button>
       </div>
@@ -86,25 +92,60 @@ export default function AdminMattersPage() {
         <div className="flex flex-wrap gap-3 items-center">
           <div className="relative flex-1 min-w-48">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-            <input className="input pl-9" placeholder="Search by name, email, or reference…"
-              value={search} onChange={(e) => setSearch(e.target.value)} />
+            <input
+              className="input pl-9"
+              placeholder="Search by name, email, or reference…"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
           </div>
           <Filter className="w-4 h-4 text-gray-400 shrink-0" />
-          <select className="input w-auto" value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)}>
+          <select
+            className="input w-auto"
+            value={filterStatus}
+            onChange={(e) => setFilterStatus(e.target.value)}
+          >
             <option value="">All statuses</option>
-            {STATUS_OPTIONS.map(s => <option key={s} value={s}>{statusLabels[s]}</option>)}
+            {STATUS_OPTIONS.map((s) => (
+              <option key={s} value={s}>
+                {statusLabels[s]}
+              </option>
+            ))}
           </select>
-          <select className="input w-auto" value={filterUrgency} onChange={(e) => setFilterUrgency(e.target.value)}>
+          <select
+            className="input w-auto"
+            value={filterUrgency}
+            onChange={(e) => setFilterUrgency(e.target.value)}
+          >
             <option value="">All urgency</option>
-            {URGENCY_OPTIONS.map(u => <option key={u} value={u}>{urgencyLabels[u]}</option>)}
+            {URGENCY_OPTIONS.map((u) => (
+              <option key={u} value={u}>
+                {urgencyLabels[u]}
+              </option>
+            ))}
           </select>
-          <select className="input w-auto" value={filterType} onChange={(e) => setFilterType(e.target.value)}>
+          <select
+            className="input w-auto"
+            value={filterType}
+            onChange={(e) => setFilterType(e.target.value)}
+          >
             <option value="">All types</option>
-            {MATTER_TYPES.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
+            {MATTER_TYPES.map((t) => (
+              <option key={t.value} value={t.value}>
+                {t.label}
+              </option>
+            ))}
           </select>
           {(filterStatus || filterUrgency || filterType || search) && (
-            <button className="text-xs text-gray-400 hover:text-gray-700"
-              onClick={() => { setFilterStatus(""); setFilterUrgency(""); setFilterType(""); setSearch(""); }}>
+            <button
+              className="text-xs text-gray-400 hover:text-gray-700"
+              onClick={() => {
+                setFilterStatus("");
+                setFilterUrgency("");
+                setFilterType("");
+                setSearch("");
+              }}
+            >
               Clear filters
             </button>
           )}
@@ -125,39 +166,54 @@ export default function AdminMattersPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-gray-100 bg-gray-50">
-                  {["Client","Reference","Type","Urgency","Status","Assigned to","Actions"].map(h => (
-                    <th key={h} className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide whitespace-nowrap">{h}</th>
+                <tr className="border-b border-gray-100 bg-gray-50 dark:bg-gray-900 dark:border-gray-600">
+                  {[
+                    "Client",
+                    "Reference",
+                    "Type",
+                    "Urgency",
+                    "Status",
+                    "Assigned to",
+                    "Actions",
+                  ].map((h) => (
+                    <th
+                      key={h}
+                      className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide whitespace-nowrap dark:text-brand-400"
+                    >
+                      {h}
+                    </th>
                   ))}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-50">
+              <tbody className="divide-y divide-gray-50 dark:divide-green-800/50">
                 {filtered.map((m) => {
-                  const lawyer = m.assignedLawyer as { _id: string; name: string } | undefined;
+                  const lawyer = m.assignedLawyer as
+                    | { _id: string; name: string }
+                    | undefined;
                   return (
                     <tr
                       key={m._id}
-                      className="hover:bg-gray-50 transition-colors"
+                      className="hover:bg-gray-50 transition-colors dark:hover:bg-gray-700"
                     >
                       <td className="px-4 py-3">
-                        <div className="font-medium text-gray-900">
+                        <div className="font-medium text-gray-900 dark:text-gray-200">
                           {m.client.firstName} {m.client.lastName}
                         </div>
-                        <div className="text-xs text-gray-400">
+                        <div className="text-xs text-gray-400 dark:text-gray-400">
                           {m.client.email}
                         </div>
                         {m.client.state && (
-                          <div className="text-xs text-gray-400">
+                          <div className="text-xs text-gray-400 dark:text-gray-400/70">
                             {m.client.state}
                           </div>
                         )}
                       </td>
                       <td className="px-4 py-3">
-                        <span className="font-mono text-xs text-gray-600 bg-gray-100 px-2 py-1 rounded">
+                        <span className="font-mono text-xs text-gray-600 bg-gray-100 px-2 py-1 rounded dark:bg-transparent dark:text-gray-200">
                           {m.referenceNumber}
                         </span>
                       </td>
-                      <td className="px-4 py-3 text-gray-600 capitalize whitespace-nowrap">
+                      <td className="px-4 py-3 text-gray-600 capitalize whitespace-nowrap dark:text-gray-400">
                         {m.type.replace(/_/g, " ")}
                       </td>
                       <td className="px-4 py-3">
@@ -184,7 +240,7 @@ export default function AdminMattersPage() {
                             <div className="w-5 h-5 rounded-full bg-brand-100 flex items-center justify-center text-xs font-medium text-brand-800">
                               {lawyer.name.charAt(0)}
                             </div>
-                            <span className="text-sm text-gray-700">
+                            <span className="text-sm text-gray-700 dark:text-gray-300">
                               {lawyer.name}
                             </span>
                           </div>

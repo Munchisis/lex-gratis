@@ -96,20 +96,20 @@ function TrackForm() {
   const currentStep = result ? (stageStepMap[result.stage] ?? 1) : 0;
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <nav className="border-b border-gray-100 bg-white">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <nav className="border-b border-gray-100 bg-white dark:bg-gray-800 dark:border-none">
         <div className="max-w-3xl mx-auto px-4 h-14 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2.5">
             <div className="w-8 h-8 bg-brand-800 rounded-lg flex items-center justify-center">
               <Scale className="w-4 h-4 text-brand-100" />
             </div>
-            <span className="text-sm font-semibold text-gray-900">
+            <span className="text-sm font-semibold text-gray-900 dark:text-gray-200">
               HumRig
             </span>
           </Link>
           <Link
             href="/submit"
-            className="text-sm text-brand-600 hover:underline"
+            className="text-sm text-brand-600 hover:underline dark:text-brand-400"
           >
             Submit a new matter
           </Link>
@@ -118,7 +118,7 @@ function TrackForm() {
 
       <div className="max-w-3xl mx-auto px-4 py-12">
         <div className="text-center mb-10">
-          <h1 className="text-2xl font-medium text-gray-900 mb-2">
+          <h1 className="text-2xl font-medium text-gray-900 mb-2 dark:text-gray-200">
             Track your matter
           </h1>
           <p className="text-sm text-gray-500">
@@ -166,10 +166,10 @@ function TrackForm() {
                   <div className="text-xs text-gray-400 mb-1">
                     Reference number
                   </div>
-                  <div className="text-xl font-mono font-semibold text-gray-900 tracking-wider">
+                  <div className="text-xl font-mono font-semibold text-gray-900 tracking-wider dark:text-gray-300">
                     {result.referenceNumber}
                   </div>
-                  <div className="text-sm text-gray-500 mt-1 capitalize">
+                  <div className="text-sm text-gray-500 mt-1 capitalize ">
                     {result.type.replace(/_/g, " ")}
                   </div>
                 </div>
@@ -198,7 +198,7 @@ function TrackForm() {
                       className={
                         "flex-1 h-2 rounded-full " +
                         (step < currentStep
-                          ? "bg-brand-600"
+                          ? "bg-brand-600 dark:bg-brand-400/80 "
                           : step === currentStep
                             ? "bg-brand-300"
                             : "bg-gray-100")
@@ -208,7 +208,7 @@ function TrackForm() {
                 </div>
                 <div className="flex justify-between text-xs text-gray-500">
                   <span>Intake</span>
-                  <span className="font-medium text-brand-700">
+                  <span className="font-medium text-brand-400">
                     {MATTER_STAGES.find((s) => s.value === result.stage)?.label}
                   </span>
                   <span>Completed</span>
@@ -247,14 +247,14 @@ function TrackForm() {
                           (done
                             ? "text-gray-400 line-through"
                             : current
-                              ? "text-gray-900 font-medium"
+                              ? "text-gray-900 font-medium dark:text-gray-300"
                               : "text-gray-400")
                         }
                       >
                         {label}
                       </span>
                       {current && (
-                        <span className="text-xs bg-brand-50 text-brand-700 px-2 py-0.5 rounded-full font-medium ml-auto">
+                        <span className="text-xs bg-brand-600 text-brand-700 px-2 py-0.5 rounded-full font-medium ml-auto">
                           Current
                         </span>
                       )}
@@ -270,11 +270,11 @@ function TrackForm() {
                 ["Last updated", result.lastUpdated],
               ].map(([label, date]) => (
                 <div key={label}>
-                  <div className="flex items-center gap-2 text-gray-400 mb-1">
+                  <div className="flex items-center gap-2 text-gray-400 mb-1 dark:text-brand-400">
                     <Clock className="w-3.5 h-3.5" />
                     <span className="text-xs">{label}</span>
                   </div>
-                  <div className="text-gray-700">
+                  <div className="text-gray-700 dark:text-gray-400">
                     {new Date(date).toLocaleDateString("en-NG", {
                       day: "numeric",
                       month: "long",

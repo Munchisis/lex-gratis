@@ -11,7 +11,7 @@ import {
   MATTER_STAGES,
   TOTAL_STAGES,
 } from "@/lib/utils";
-import type { IMatter, MatterStatus, MatterStage } from "@/types";
+import type { IMatter, MatterStage } from "@/types";
 
 type Tab = "active" | "pool" | "completed";
 
@@ -135,7 +135,7 @@ export default function LawyerMattersPage() {
                 {/* Header */}
                 <div className="flex items-start justify-between gap-4 mb-4">
                   <div>
-                    <div className="font-medium text-gray-900">
+                    <div className="font-medium text-gray-900  dark:text-gray-200">
                       {m.client.firstName} {m.client.lastName}
                     </div>
                     <div className="text-xs text-gray-400 mt-0.5 flex items-center gap-2">

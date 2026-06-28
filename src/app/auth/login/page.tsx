@@ -46,7 +46,7 @@ function LoginForm() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4 dark:bg-gray-900">
       <div className="w-full max-w-md">
         <div className="flex items-center gap-3 justify-center mb-8">
           <Link
@@ -58,7 +58,7 @@ function LoginForm() {
           <div>
             <Link
               href="/"
-              className="text-lg font-semibold text-gray-900 leading-none"
+              className="text-lg font-semibold text-gray-900 leading-none dark:text-gray-300"
             >
               HumRi
             </Link>
@@ -69,10 +69,15 @@ function LoginForm() {
         </div>
 
         <div className="card">
-          <h1 className="text-xl font-medium text-gray-900 mb-1">Sign in</h1>
-          <p className="text-sm text-gray-500 mb-6">
+          <h1 className="text-xl font-medium text-gray-900 mb-1 dark:text-gray-300">
+            Sign in
+          </h1>
+          <p className="text-sm text-gray-500 mb-6 dark:text-gray-400">
             Lawyer and admin access only.{" "}
-            <Link href="/submit" className="text-brand-600 hover:underline">
+            <Link
+              href="/submit"
+              className="text-brand-600 hover:underline dark:text-brand-400"
+            >
               Submit a matter instead →
             </Link>
           </p>

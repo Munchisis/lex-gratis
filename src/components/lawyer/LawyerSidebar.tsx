@@ -12,6 +12,7 @@ import {
   Inbox,
 } from "lucide-react";
 import { cn, getInitials } from "@/lib/utils";
+import { ThemeToggle } from "@/components/shared/themeToggle";
 
 interface Props {
   user: { name?: string | null; email?: string | null };
@@ -75,6 +76,9 @@ export function LawyerSidebar({ user }: Props) {
             </div>
             <div className="text-xs text-gray-500 truncate">{user.email}</div>
           </div>
+        </div>
+        <div className="px-3 mb-3">
+          <ThemeToggle />
         </div>
         <button
           onClick={() => signOut({ callbackUrl: "/auth/login" })}

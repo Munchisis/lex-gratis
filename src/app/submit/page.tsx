@@ -70,37 +70,53 @@ export default function SubmitPage() {
 
   if (refNum) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4 dark:bg-gray-900">
         <div className="w-full max-w-md card text-center">
           <div className="w-14 h-14 bg-brand-50 rounded-full flex items-center justify-center mx-auto mb-4">
             <CheckCircle className="w-7 h-7 text-brand-600" />
           </div>
           <h1 className="text-xl font-medium mb-2">Matter submitted</h1>
-          <p className="text-sm text-gray-500 mb-6 leading-relaxed">
-            Your matter has been received. A qualified volunteer lawyer will be assigned
-            within 72 hours and will contact you directly.
+          <p className="text-sm text-gray-500 mb-6 leading-relaxed dark:text-gray-400">
+            Your matter has been received. A qualified volunteer lawyer will be
+            assigned within 72 hours and will contact you directly.
           </p>
-          <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 mb-6">
-            <p className="text-xs text-gray-500 mb-2">Your reference number — save this</p>
+          <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 mb-6 dark:bg-gray-800 dark:border-gray-700">
+            <p className="text-xs text-gray-500 mb-2">
+              Your reference number — save this
+            </p>
             <div className="flex items-center justify-center gap-3">
-              <span className="text-xl font-mono font-semibold text-brand-700">{refNum}</span>
-              <button onClick={copyRef} className="p-1.5 rounded-lg hover:bg-gray-200 transition-colors text-gray-400">
-                {copied ? <Check className="w-4 h-4 text-green-600" /> : <Copy className="w-4 h-4" />}
+              <span className="text-xl font-mono font-semibold text-brand-700 dark:-gray-300">
+                {refNum}
+              </span>
+              <button
+                onClick={copyRef}
+                className="p-1.5 rounded-lg hover:bg-gray-200 transition-colors text-gray-400"
+              >
+                {copied ? (
+                  <Check className="w-4 h-4 text-green-600" />
+                ) : (
+                  <Copy className="w-4 h-4" />
+                )}
               </button>
             </div>
           </div>
-          <Link href="/track" className="btn btn-primary w-full justify-center py-2.5 mb-3 block">
+          <Link
+            href="/track"
+            className="btn btn-primary w-full justify-center py-2.5 mb-3 block"
+          >
             Track my matter
           </Link>
-          <Link href="/" className="text-sm text-gray-400 hover:text-gray-600">Return to home</Link>
+          <Link href="/" className="text-sm text-gray-400 hover:text-gray-600">
+            Return to home
+          </Link>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-brand-900 px-6 py-4 flex items-center justify-between">
+    <div className="min-h-screen bg-gray-50  dark:bg-gray-900">
+      <header className="bg-brand-900 px-6 py-4 flex items-center justify-between  dark:bg-gray-800">
         <Link href="/" className="flex items-center gap-3">
           <div className="w-8 h-8 bg-brand-100 rounded-lg flex items-center justify-center">
             <Scale className="w-4 h-4 text-brand-900" />
@@ -117,7 +133,7 @@ export default function SubmitPage() {
 
       <div className="max-w-2xl mx-auto px-4 py-10">
         <div className="mb-8">
-          <h1 className="text-2xl font-medium text-gray-900">
+          <h1 className="text-2xl font-medium text-gray-900  dark:text-gray-300">
             Submit a legal matter
           </h1>
           <p className="text-sm text-gray-500 mt-2 leading-relaxed">

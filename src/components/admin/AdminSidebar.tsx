@@ -8,6 +8,7 @@ import {
   Users, LogOut, ChevronRight,
 } from "lucide-react";
 import { cn, getInitials } from "@/lib/utils";
+import { ThemeToggle } from "@/components/shared/themeToggle";
 
 interface Props {
   user: { name?: string | null; email?: string | null };
@@ -23,14 +24,20 @@ export function AdminSidebar({ user }: Props) {
   const pathname = usePathname();
 
   return (
-    <aside className="w-60 shrink-0 bg-brand-900 flex flex-col min-h-screen">
+    <aside className="w-60 shrink-0 bg-brand-900 flex flex-col min-h-screen ">
       {/* Logo */}
       <div className="flex items-center gap-3 px-5 py-5 border-b border-brand-800">
-        <Link href="/" className="w-8 h-8 bg-brand-100 rounded-lg flex items-center justify-center shrink-0">
+        <Link
+          href="/"
+          className="w-8 h-8 bg-brand-100 rounded-lg flex items-center justify-center shrink-0"
+        >
           <Scale className="w-4 h-4 text-brand-900" />
         </Link>
         <div>
-          <Link href="/" className="text-sm font-semibold text-brand-50 leading-none">
+          <Link
+            href="/"
+            className="text-sm font-semibold text-brand-50 leading-none"
+          >
             HUMRI
           </Link>
           <div className="text-xs text-brand-400 mt-0.5">Admin</div>
@@ -75,6 +82,10 @@ export function AdminSidebar({ user }: Props) {
             <div className="text-xs text-brand-400 truncate">{user.email}</div>
           </div>
         </div>
+        <div className="px-3 mb-3">
+          <ThemeToggle />
+        </div>
+
         <button
           onClick={() => signOut({ callbackUrl: "/auth/login" })}
           className="w-full flex items-center gap-3 px-3 py-2 text-sm text-white/50 hover:text-brand-50 hover:bg-brand-800 rounded-lg transition-all"

@@ -3,16 +3,15 @@ import {
   Scale,
   ShieldCheck,
   ArrowRight,
-  FileText,
-  UserCheck,
   Users,
 } from "lucide-react";
+import { ThemeToggle } from "@/components/shared/themeToggle";
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white dark:bg-gray-950">
       {/* Navbar */}
-      <nav className="border-b border-gray-100 bg-white sticky top-0 z-50 shadow-lg">
+      <nav className="border-b border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 sticky top-0 z-50">
         <div className="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <Link
@@ -24,7 +23,7 @@ export default function HomePage() {
             <div>
               <Link
                 href="/"
-                className="text-sm font-semibold leading-none text-gray-900"
+                className="text-sm font-semibold leading-none text-gray-900 dark:text-gray-200"
               >
                 HUMRI
               </Link>
@@ -34,13 +33,14 @@ export default function HomePage() {
           <div className="flex items-center gap-3">
             <Link
               href="/track"
-              className="text-sm text-gray-500 hover:text-gray-900 transition-colors"
+              className="text-sm text-gray-500 hover:text-gray-900 transition-colors dark:hover:text-gray-400"
             >
               Track matter
             </Link>
+            <ThemeToggle />
             <Link
               href="/auth/login"
-              className="text-sm text-gray-500 hover:text-gray-900 transition-colors"
+              className="text-sm text-gray-500 hover:text-gray-900 transition-colors dark:hover:text-gray-400"
             >
               Sign in
             </Link>
@@ -55,7 +55,7 @@ export default function HomePage() {
       </nav>
 
       {/* Hero */}
-      <section className="bg-brand-800 text-white">
+      <section className="bg-brand-800 text-white dark:bg-gray-900">
         <div className="max-w-5xl mx-auto px-4 py-20 text-center">
           <div className="inline-flex items-center gap-2 bg-brand-600 text-brand-100 text-xs px-4 py-1.5 rounded-full mb-6 font-medium tracking-wide">
             <ShieldCheck className="w-3.5 h-3.5" />
@@ -87,7 +87,7 @@ export default function HomePage() {
       </section>
 
       {/* Stats */}
-      <section className="border-y border-gray-100 bg-gray-50">
+      <section className="border-y border-gray-100 bg-gray-50 dark:bg-gray-900 dark:border-gray-700">
         <div className="max-w-5xl mx-auto px-4 py-8 grid grid-cols-3 gap-8 text-center">
           {[
             ["1,240+", "Matters resolved"],
@@ -105,7 +105,7 @@ export default function HomePage() {
       {/* How it works */}
       <section className="max-w-5xl mx-auto px-4 py-20">
         <div className="text-center mb-12">
-          <h2 className="text-2xl font-medium text-gray-900 mb-3">
+          <h2 className="text-2xl font-medium text-gray-900 mb-3 dark:text-gray-100">
             How it works
           </h2>
           <p className="text-gray-500 text-sm max-w-md mx-auto">
@@ -132,17 +132,17 @@ export default function HomePage() {
           ].map((item, i) => (
             <div
               key={i}
-              className="relative bg-white border border-neutral-100 rounded-2xl p-8 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 group"
+              className="relative bg-white border border-neutral-100 rounded-2xl p-8 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 group dark:bg-gray-900 dark:border-brand-600"
             >
               {/* Large faint background step number */}
-              <div className="absolute top-1 right-4 text-5xl font-black text-brand-400/10 select-none group-hover:text-brand-400/20 transition-colors ">
+              <div className="absolute top-1 right-4 text-5xl font-black text-brand-400/10 select-none group-hover:text-brand-400/20 transition-colors  dark:text-gray-600">
                 {item.step}
               </div>
 
-              <h3 className="text-xl font-bold text-neutral-900 tracking-tight mb-3 mt-7">
+              <h3 className="text-xl font-bold text-neutral-900 tracking-tight mb-3 mt-7  dark:text-gray-300">
                 {item.title}
               </h3>
-              <p className="text-neutral-600 leading-relaxed text-sm">
+              <p className="text-neutral-600 leading-relaxed text-sm  dark:text-gray-500">
                 {item.desc}
               </p>
             </div>
@@ -151,9 +151,9 @@ export default function HomePage() {
       </section>
 
       {/* Matter types */}
-      <section className="bg-gray-50 border-t border-gray-100">
+      <section className="bg-gray-50 border-t border-gray-100 dark:bg-gray-900  dark:border-none dark:text-gray-200">
         <div className="max-w-5xl mx-auto px-4 py-16">
-          <h2 className="text-xl font-medium mb-8">
+          <h2 className="text-xl font-medium mb-8  ">
             We handle matters including
           </h2>
           <div className="flex flex-wrap gap-3">
@@ -172,7 +172,7 @@ export default function HomePage() {
             ].map((t) => (
               <span
                 key={t}
-                className="text-sm px-4 py-2 bg-white border border-gray-200 rounded-lg text-gray-700"
+                className="text-sm px-4 py-2 bg-white border border-gray-200 rounded-lg text-gray-700  dark:bg-gray-300"
               >
                 {t}
               </span>
@@ -210,20 +210,29 @@ export default function HomePage() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-gray-100 bg-gray-50">
+      <footer className="border-t border-gray-100 bg-gray-50 dark:bg-gray-900 dark:border-gray-800">
         <div className="max-w-5xl mx-auto px-4 py-8 flex items-center justify-between text-xs text-gray-400">
           <div className="flex items-center gap-2">
             <Scale className="w-4 h-4" />
             <span>HUMRI — Pro Bono Legal Aid Nigeria</span>
           </div>
           <div className="flex gap-4">
-            <Link href="/submit" className="hover:text-gray-600">
+            <Link
+              href="/submit"
+              className="hover:text-gray-600 dark:hover:text-gray-300"
+            >
               Submit matter
             </Link>
-            <Link href="/track" className="hover:text-gray-600">
+            <Link
+              href="/track"
+              className="hover:text-gray-600 dark:hover:text-gray-300"
+            >
               Track matter
             </Link>
-            <Link href="/auth/login" className="hover:text-gray-600">
+            <Link
+              href="/auth/login"
+              className="hover:text-gray-600 dark:hover:text-gray-300"
+            >
               Sign in
             </Link>
           </div>
