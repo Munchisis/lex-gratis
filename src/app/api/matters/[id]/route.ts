@@ -156,13 +156,46 @@ export async function PATCH(
         } catch (err) {
           console.error("[EMAIL]", err);
         }
-        // Update lawyer's stats
         if (matter.assignedLawyer) {
           await User.findByIdAndUpdate(matter.assignedLawyer, {
             $inc: { activeMatters: -1, completedMatters: 1 },
           });
         }
       }
+    }
+
+    if (status === "completed") {
+      matter.stage = "completed";
+      try {
+        const lawyer = await User.findById(session.user.id)
+          .select("name")
+          .lean();
+        await sendMatterCompleted({
+          clientName: `${matter.client.firstName} ${matter.client.lastName}`,
+          clientEmail: matter.client.email,
+          referenceNumber: matter.referenceNumber,
+          lawyerName: lawyer?.name ?? "Your lawyer",
+        });
+      } catch (err) {
+        console.error("[EMAIL]", err);
+      }
+      
+      if (matter.assignedLawyer) {
+        await User.findByIdAndUpdate(matter.assignedLawyer, {
+          $inc: { activeMatters: -1, completedMatters: 1 },
+        });
+      }
+    }
+
+    // Clear lawyer assignment when reset to unassigned
+    if (status === "unassigned") {
+      if (matter.assignedLawyer) {
+        await User.findByIdAndUpdate(matter.assignedLawyer, {
+          $inc: { activeMatters: -1 },
+        });
+      }
+      matter.assignedLawyer = undefined;
+      matter.stage = "intake";
     }
 
     if (stage !== undefined) {
