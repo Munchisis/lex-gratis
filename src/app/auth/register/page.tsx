@@ -17,58 +17,132 @@ const SPECIALISATIONS = [
 ];
 
 const NIGERIAN_STATES = [
-  "Abia","Adamawa","Akwa Ibom","Anambra","Bauchi","Bayelsa","Benue","Borno",
-  "Cross River","Delta","Ebonyi","Edo","Ekiti","Enugu","FCT","Gombe","Imo",
-  "Jigawa","Kaduna","Kano","Katsina","Kebbi","Kogi","Kwara","Lagos","Nasarawa",
-  "Niger","Ogun","Ondo","Osun","Oyo","Plateau","Rivers","Sokoto","Taraba",
-  "Yobe","Zamfara",
+  "Abia",
+  "Adamawa",
+  "Akwa Ibom",
+  "Anambra",
+  "Bauchi",
+  "Bayelsa",
+  "Benue",
+  "Borno",
+  "Cross River",
+  "Delta",
+  "Ebonyi",
+  "Edo",
+  "Ekiti",
+  "Enugu",
+  "FCT",
+  "Gombe",
+  "Imo",
+  "Jigawa",
+  "Kaduna",
+  "Kano",
+  "Katsina",
+  "Kebbi",
+  "Kogi",
+  "Kwara",
+  "Lagos",
+  "Nasarawa",
+  "Niger",
+  "Ogun",
+  "Ondo",
+  "Osun",
+  "Oyo",
+  "Plateau",
+  "Rivers",
+  "Sokoto",
+  "Taraba",
+  "Yobe",
+  "Zamfara",
 ];
 
 export default function RegisterPage() {
   const [form, setForm] = useState({
-    name: "", email: "", password: "", confirmPassword: "",
-    barNumber: "", specialisation: "", state: "",
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    barNumber: "",
+    specialisation: "",
+    state: "",
   });
-  const [error, setError]     = useState("");
+  const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  // Consent states
+  const [hasConsented, setHasConsented] = useState<boolean>(false);
+  const [consentError, setConsentError] = useState<string>("");
+
+  const handleCheckboxChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ): void => {
+    setHasConsented(e.target.checked);
+
+    if (e.target.checked) {
+      setConsentError("");
+    }
+  };
+
+  // Capitalization helper to clean user names on the fly
+  const capitalizeWords = (str: string): string => {
+    return str
+      .split(" ")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+  };
+
   function update(field: string, value: string) {
-    setForm((prev) => ({ ...prev, [field]: value }));
+    const finalValue = field === "name" ? capitalizeWords(value) : value;
+    setForm((prev) => ({ ...prev, [field]: finalValue }));
   }
 
-  async function handleSubmit(e: React.FormEvent) {
+  // Type-safe async submit handler
+  async function handleSubmit(e: React.FormEvent): Promise<void> {
     e.preventDefault();
     setError("");
+    setConsentError("");
 
     if (form.password !== form.confirmPassword) {
       setError("Passwords do not match.");
       return;
     }
 
-    setLoading(true);
-    const res = await fetch("/api/auth/register", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        name:           form.name,
-        email:          form.email,
-        password:       form.password,
-        barNumber:      form.barNumber,
-        specialisation: form.specialisation,
-        state:          form.state,
-      }),
-    });
-
-    const data = await res.json();
-    setLoading(false);
-
-    if (!res.ok) {
-      setError(data.error ?? "Registration failed. Please try again.");
+    if (!hasConsented) {
+      setConsentError(
+        "You must agree to the Terms and Privacy Policy to create an account.",
+      );
       return;
     }
 
-    setSuccess(true);
+    setLoading(true);
+    try {
+      const res = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: form.name,
+          email: form.email,
+          password: form.password,
+          barNumber: form.barNumber,
+          specialisation: form.specialisation,
+          state: form.state,
+        }),
+      });
+
+      const data = await res.json();
+      setLoading(false);
+
+      if (!res.ok) {
+        setError(data.error ?? "Registration failed. Please try again.");
+        return;
+      }
+
+      setSuccess(true);
+    } catch (err) {
+      setLoading(false);
+      setError("An unexpected network error occurred.");
+    }
   }
 
   if (success) {
@@ -134,7 +208,7 @@ export default function RegisterPage() {
                   Full name<span className="text-red-500">*</span>
                 </label>
                 <input
-                  className="input"
+                  className="input capitalize"
                   placeholder="Chidi Okoro"
                   required
                   value={form.name}
@@ -182,7 +256,8 @@ export default function RegisterPage() {
               </div>
             </div>
 
-            <div className="border-t border-gray-100 pt-4">
+            {/* Professional Details Section */}
+            <div className="border-t border-gray-100 pt-4 dark:border-gray-800">
               <p className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-3">
                 Professional details <span className="text-red-500">*</span>
               </p>
@@ -219,7 +294,7 @@ export default function RegisterPage() {
                 </div>
                 <div className="col-span-2">
                   <label className="label">
-                    Area of specialisation{" "}
+                    Primary Specialisation
                     <span className="text-red-500">*</span>
                   </label>
                   <select
@@ -229,9 +304,9 @@ export default function RegisterPage() {
                     onChange={(e) => update("specialisation", e.target.value)}
                   >
                     <option value="">Select specialisation…</option>
-                    {SPECIALISATIONS.map((s) => (
-                      <option key={s} value={s}>
-                        {s}
+                    {SPECIALISATIONS.map((spec) => (
+                      <option key={spec} value={spec}>
+                        {spec}
                       </option>
                     ))}
                   </select>
@@ -239,32 +314,67 @@ export default function RegisterPage() {
               </div>
             </div>
 
+            {/* Consent Box Section */}
+            <div className="border-t border-gray-100 pt-4 dark:border-gray-800 space-y-2">
+              <div className="flex items-start gap-2.5 text-sm text-gray-600 dark:text-gray-300">
+                {/* The Checkbox element */}
+                <input
+                  type="checkbox"
+                  id="legal-consent"
+                  checked={hasConsented}
+                  onChange={handleCheckboxChange}
+                  className="mt-1 h-4 w-4 rounded border-gray-300 text-brand-600 focus:ring-brand-500 cursor-pointer"
+                />
+                <label
+                  htmlFor="legal-consent"
+                  className="select-none leading-normal cursor-pointer"
+                >
+                  I agree to the{" "}
+                  <Link
+                    href="/terms"
+                    target="_blank"
+                    className="text-brand-600 font-medium underline hover:text-brand-700"
+                  >
+                    Terms of Use
+                  </Link>{" "}
+                  and have read the{" "}
+                  <Link
+                    href="/privacy"
+                    target="_blank"
+                    className="text-brand-600 font-medium underline hover:text-brand-700"
+                  >
+                    Privacy Policy
+                  </Link>
+                  .
+                </label>
+              </div>
+
+              {/* Consent Warning Message */}
+              {consentError && (
+                <div className="flex items-start gap-2 text-red-600 text-xs font-medium pt-1 animate-pulse">
+                  <AlertCircle className="w-3.5 h-3.5 mt-0.5 shrink-0" />
+                  <span>{consentError}</span>
+                </div>
+              )}
+            </div>
+
+            {/* Submit Button */}
             <button
               type="submit"
               disabled={loading}
-              className="btn btn-primary w-full justify-center py-2.5 mt-1"
+              className="btn btn-primary w-full py-2.5 flex items-center justify-center gap-2"
             >
               {loading ? (
                 <>
-                  <Loader2 className="w-4 h-4 animate-spin" /> Submitting
-                  application…
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span>Submitting application...</span>
                 </>
               ) : (
-                "Submit application"
+                <span>Submit application</span>
               )}
             </button>
           </form>
         </div>
-
-        <p className="text-center text-sm text-gray-500 mt-5">
-          Already have an account?{" "}
-          <Link
-            href="/auth/login"
-            className="text-brand-600 hover:underline font-medium"
-          >
-            Sign in →
-          </Link>
-        </p>
       </div>
     </div>
   );
