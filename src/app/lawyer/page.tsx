@@ -36,7 +36,7 @@ export default async function LawyerDashboard() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-3 gap-4 mb-8">
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
         <div className="stat-card">
           <div className="w-8 h-8 bg-brand-50 rounded-lg flex items-center justify-center mb-3">
             <FileText className="w-4 h-4 text-brand-600" />

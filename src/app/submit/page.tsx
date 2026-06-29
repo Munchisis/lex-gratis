@@ -154,7 +154,7 @@ export default function SubmitPage() {
             <h2 className="text-sm font-medium text-brand-700 uppercase tracking-wide mb-4">
               Your details
             </h2>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="label">
                   First name <span className="text-red-500">*</span>

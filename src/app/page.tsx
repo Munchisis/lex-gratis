@@ -32,6 +32,7 @@ export default function HomePage() {
               </div>
             </div>
           </div>
+
           <div className="flex items-center gap-3">
             <Link
               href="/track"
@@ -69,7 +70,7 @@ export default function HomePage() {
           </h1>
           <p className="text-brand-200 text-lg max-w-xl mx-auto mb-10 leading-relaxed">
             HUMRI connects people facing legal challenges with qualified
-            Nigerian volunteer lawyers — completely free of charge.
+            Nigerian volunteer lawyers, completely free of charge.
           </p>
           <div className="flex items-center justify-center gap-3 flex-wrap">
             <Link
@@ -90,7 +91,7 @@ export default function HomePage() {
 
       {/* Stats */}
       <section className="border-y border-gray-100 bg-gray-50 dark:bg-gray-900 dark:border-gray-700">
-        <div className="max-w-5xl mx-auto px-4 py-8 grid grid-cols-3 gap-8 text-center">
+        <div className="max-w-5xl mx-auto px-4 py-8 grid grid-cols-3 gap-4 text-center">
           {[
             ["1,240+", "Matters resolved"],
             ["86", "Volunteer lawyers"],

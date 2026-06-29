@@ -6,25 +6,33 @@ import { statusLabels, urgencyStyles, urgencyLabels } from "@/lib/utils";
 import { MATTER_TYPES } from "@/types";
 import type { IMatter, MatterStatus, MatterUrgency } from "@/types";
 
-const STATUS_OPTIONS: MatterStatus[] = ["unassigned","assigned","in_progress","under_review","completed"];
-const URGENCY_OPTIONS: MatterUrgency[] = ["normal","urgent","critical"];
+const STATUS_OPTIONS: MatterStatus[] = [
+  "unassigned",
+  "assigned",
+  "in_progress",
+  "under_review",
+  "completed",
+];
+const URGENCY_OPTIONS: MatterUrgency[] = ["normal", "urgent", "critical"];
 
 export default function AdminMattersPage() {
-  const [matters, setMatters]   = useState<IMatter[]>([]);
-  const [lawyers, setLawyers]   = useState<{ _id: string; name: string; specialisation: string }[]>([]);
-  const [loading, setLoading]   = useState(true);
-  const [search, setSearch]     = useState("");
-  const [filterStatus, setFilterStatus]   = useState("");
+  const [matters, setMatters] = useState<IMatter[]>([]);
+  const [lawyers, setLawyers] = useState<
+    { _id: string; name: string; specialisation: string }[]
+  >([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
+  const [filterStatus, setFilterStatus] = useState("");
   const [filterUrgency, setFilterUrgency] = useState("");
-  const [filterType, setFilterType]       = useState("");
+  const [filterType, setFilterType] = useState("");
   const [assigning, setAssigning] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
     const params = new URLSearchParams();
-    if (filterStatus)  params.set("status",  filterStatus);
+    if (filterStatus) params.set("status", filterStatus);
     if (filterUrgency) params.set("urgency", filterUrgency);
-    if (filterType)    params.set("type",    filterType);
+    if (filterType) params.set("type", filterType);
 
     const [mRes, lRes] = await Promise.all([
       fetch("/api/matters?" + params),
@@ -36,7 +44,9 @@ export default function AdminMattersPage() {
     setLoading(false);
   }, [filterStatus, filterUrgency, filterType]);
 
-  useEffect(() => { load(); }, [load]);
+  useEffect(() => {
+    load();
+  }, [load]);
 
   async function assignLawyer(matterId: string, lawyerId: string) {
     setAssigning(matterId);
@@ -63,8 +73,8 @@ export default function AdminMattersPage() {
     const q = search.toLowerCase();
     return (
       m.client.firstName.toLowerCase().includes(q) ||
-      m.client.lastName.toLowerCase().includes(q)  ||
-      m.client.email.toLowerCase().includes(q)     ||
+      m.client.lastName.toLowerCase().includes(q) ||
+      m.client.email.toLowerCase().includes(q) ||
       m.referenceNumber.toLowerCase().includes(q)
     );
   });
@@ -152,120 +162,198 @@ export default function AdminMattersPage() {
         </div>
       </div>
 
-      {/* Table */}
-      {loading ? (
-        <div className="flex items-center justify-center py-20 text-gray-400 gap-3">
-          <Loader2 className="w-5 h-5 animate-spin" /> Loading matters…
-        </div>
-      ) : filtered.length === 0 ? (
-        <div className="card text-center py-16 text-gray-400">
-          <p className="text-sm">No matters match the current filters.</p>
-        </div>
-      ) : (
-        <div className="card p-0 overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-gray-100 bg-gray-50 dark:bg-gray-900 dark:border-gray-600">
-                  {[
-                    "Client",
-                    "Reference",
-                    "Type",
-                    "Urgency",
-                    "Status",
-                    "Assigned to",
-                    "Actions",
-                  ].map((h) => (
-                    <th
-                      key={h}
-                      className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide whitespace-nowrap dark:text-brand-400"
-                    >
-                      {h}
-                    </th>
+      {/* Mobile cards */}
+      <div className="lg:hidden space-y-3">
+        {filtered.map((m) => {
+          const lawyer = m.assignedLawyer as
+            | { _id: string; name: string }
+            | undefined;
+          return (
+            <div key={m._id} className="card">
+              <div className="flex items-start justify-between gap-3 mb-3">
+                <div>
+                  <div className="font-medium text-gray-900 dark:text-gray-100">
+                    {m.client.firstName} {m.client.lastName}
+                  </div>
+                  <div className="text-xs text-gray-400 mt-0.5">
+                    {m.client.email}
+                  </div>
+                  <span className="font-mono text-xs text-gray-500 bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded mt-1 inline-block">
+                    {m.referenceNumber}
+                  </span>
+                </div>
+                <span
+                  className={
+                    "badge text-xs " + urgencyStyles[m.urgency as MatterUrgency]
+                  }
+                >
+                  {urgencyLabels[m.urgency as MatterUrgency]}
+                </span>
+              </div>
+              <div className="flex items-center gap-2 mb-3 flex-wrap">
+                <span className="text-xs text-gray-500 capitalize">
+                  {m.type.replace(/_/g, " ")}
+                </span>
+                {m.client.state && (
+                  <span className="text-xs text-gray-400">
+                    · {m.client.state}
+                  </span>
+                )}
+                <span className="text-xs text-gray-400">
+                  ·{" "}
+                  {new Date(m.createdAt).toLocaleDateString("en-NG", {
+                    day: "numeric",
+                    month: "short",
+                  })}
+                </span>
+              </div>
+              <div className="flex items-center gap-2 flex-wrap">
+                <select
+                  className="input py-1 text-xs flex-1 min-w-0"
+                  value={m.status}
+                  onChange={(e) => setStatus(m._id, e.target.value)}
+                >
+                  {STATUS_OPTIONS.map((s) => (
+                    <option key={s} value={s}>
+                      {statusLabels[s]}
+                    </option>
                   ))}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-50 dark:divide-green-800/50">
-                {filtered.map((m) => {
-                  const lawyer = m.assignedLawyer as
-                    | { _id: string; name: string }
-                    | undefined;
-                  return (
-                    <tr
-                      key={m._id}
-                      className="hover:bg-gray-50 transition-colors dark:hover:bg-gray-700"
-                    >
-                      <td className="px-4 py-3">
-                        <div className="font-medium text-gray-900 dark:text-gray-200">
-                          {m.client.firstName} {m.client.lastName}
-                        </div>
-                        <div className="text-xs text-gray-400 dark:text-gray-400">
-                          {m.client.email}
-                        </div>
-                        {m.client.state && (
-                          <div className="text-xs text-gray-400 dark:text-gray-400/70">
-                            {m.client.state}
-                          </div>
-                        )}
-                      </td>
-                      <td className="px-4 py-3">
-                        <span className="font-mono text-xs text-gray-600 bg-gray-100 px-2 py-1 rounded dark:bg-transparent dark:text-gray-200">
-                          {m.referenceNumber}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3 text-gray-600 capitalize whitespace-nowrap dark:text-gray-400">
-                        {m.type.replace(/_/g, " ")}
-                      </td>
-                      <td className="px-4 py-3">
-                        <span className={"badge " + urgencyStyles[m.urgency]}>
-                          {urgencyLabels[m.urgency]}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3">
-                        <select
-                          className="input py-1 text-xs w-36"
-                          value={m.status}
-                          onChange={(e) => setStatus(m._id, e.target.value)}
-                        >
-                          {STATUS_OPTIONS.map((s) => (
-                            <option key={s} value={s}>
-                              {statusLabels[s]}
-                            </option>
-                          ))}
-                        </select>
-                      </td>
-                      <td className="px-4 py-3">
-                        {lawyer ? (
-                          <div className="flex items-center gap-2">
-                            <div className="w-5 h-5 rounded-full bg-brand-100 flex items-center justify-center text-xs font-medium text-brand-800">
-                              {lawyer.name.charAt(0)}
-                            </div>
-                            <span className="text-sm text-gray-700 dark:text-gray-300">
-                              {lawyer.name}
-                            </span>
-                          </div>
-                        ) : (
-                          <span className="text-xs text-gray-400 italic">
-                            Unclaimed
-                          </span>
-                        )}
-                      </td>
-                      <td className="px-4 py-3">
-                        <div className="text-xs text-gray-400">
-                          {new Date(m.createdAt).toLocaleDateString("en-NG", {
-                            day: "numeric",
-                            month: "short",
-                          })}
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+                </select>
+                <div className="text-xs text-gray-500 shrink-0">
+                  {lawyer ? (
+                    <span className="flex items-center gap-1">
+                      <div className="w-4 h-4 rounded-full bg-brand-100 dark:bg-brand-900 flex items-center justify-center text-xs font-medium text-brand-800 dark:text-brand-200">
+                        {lawyer.name.charAt(0)}
+                      </div>
+                      {lawyer.name}
+                    </span>
+                  ) : (
+                    <span className="italic text-gray-400">Unclaimed</span>
+                  )}
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Desktop table */}
+      <div className="hidden lg:block card p-0 overflow-hidden">
+        {/* Table */}
+        {loading ? (
+          <div className="flex items-center justify-center py-20 text-gray-400 gap-3">
+            <Loader2 className="w-5 h-5 animate-spin" /> Loading matters…
           </div>
-        </div>
-      )}
+        ) : filtered.length === 0 ? (
+          <div className="card text-center py-16 text-gray-400">
+            <p className="text-sm">No matters match the current filters.</p>
+          </div>
+        ) : (
+          <div className="card p-0 overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-gray-100 bg-gray-50 dark:bg-gray-900 dark:border-gray-600">
+                    {[
+                      "Client",
+                      "Reference",
+                      "Type",
+                      "Urgency",
+                      "Status",
+                      "Assigned to",
+                      "Actions",
+                    ].map((h) => (
+                      <th
+                        key={h}
+                        className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide whitespace-nowrap dark:text-brand-400"
+                      >
+                        {h}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-50 dark:divide-green-800/50">
+                  {filtered.map((m) => {
+                    const lawyer = m.assignedLawyer as
+                      | { _id: string; name: string }
+                      | undefined;
+                    return (
+                      <tr
+                        key={m._id}
+                        className="hover:bg-gray-50 transition-colors dark:hover:bg-gray-700"
+                      >
+                        <td className="px-4 py-3">
+                          <div className="font-medium text-gray-900 dark:text-gray-200">
+                            {m.client.firstName} {m.client.lastName}
+                          </div>
+                          <div className="text-xs text-gray-400 dark:text-gray-400">
+                            {m.client.email}
+                          </div>
+                          {m.client.state && (
+                            <div className="text-xs text-gray-400 dark:text-gray-400/70">
+                              {m.client.state}
+                            </div>
+                          )}
+                        </td>
+                        <td className="px-4 py-3">
+                          <span className="font-mono text-xs text-gray-600 bg-gray-100 px-2 py-1 rounded dark:bg-transparent dark:text-gray-200">
+                            {m.referenceNumber}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3 text-gray-600 capitalize whitespace-nowrap dark:text-gray-400">
+                          {m.type.replace(/_/g, " ")}
+                        </td>
+                        <td className="px-4 py-3">
+                          <span className={"badge " + urgencyStyles[m.urgency]}>
+                            {urgencyLabels[m.urgency]}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3">
+                          <select
+                            className="input py-1 text-xs w-36"
+                            value={m.status}
+                            onChange={(e) => setStatus(m._id, e.target.value)}
+                          >
+                            {STATUS_OPTIONS.map((s) => (
+                              <option key={s} value={s}>
+                                {statusLabels[s]}
+                              </option>
+                            ))}
+                          </select>
+                        </td>
+                        <td className="px-4 py-3">
+                          {lawyer ? (
+                            <div className="flex items-center gap-2">
+                              <div className="w-5 h-5 rounded-full bg-brand-100 flex items-center justify-center text-xs font-medium text-brand-800">
+                                {lawyer.name.charAt(0)}
+                              </div>
+                              <span className="text-sm text-gray-700 dark:text-gray-300">
+                                {lawyer.name}
+                              </span>
+                            </div>
+                          ) : (
+                            <span className="text-xs text-gray-400 italic">
+                              Unclaimed
+                            </span>
+                          )}
+                        </td>
+                        <td className="px-4 py-3">
+                          <div className="text-xs text-gray-400">
+                            {new Date(m.createdAt).toLocaleDateString("en-NG", {
+                              day: "numeric",
+                              month: "short",
+                            })}
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
