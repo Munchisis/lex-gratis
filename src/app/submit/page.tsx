@@ -29,27 +29,70 @@ type Urgency = "normal" | "urgent" | "critical";
 
 export default function SubmitPage() {
   const [form, setForm] = useState({
-    firstName: "", lastName: "", email: "", phone: "",
-    state: "", preferredLanguage: "English",
-    type: "", description: "", urgency: "normal" as Urgency,
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    state: "",
+    preferredLanguage: "English",
+    type: "",
+    description: "",
+    urgency: "normal" as Urgency,
   });
-  const [error, setError]     = useState("");
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [refNum, setRefNum]   = useState("");
-  const [copied, setCopied]   = useState(false);
+  const [refNum, setRefNum] = useState("");
+  const [copied, setCopied] = useState(false);
 
+  // Consent states
+  const [hasConsented, setHasConsented] = useState<boolean>(false);
+  const [consentError, setConsentError] = useState<string>("");
+
+  const handleCheckboxChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ): void => {
+    setHasConsented(e.target.checked);
+
+    if (e.target.checked) {
+      setConsentError("");
+    }
+  };
+
+  // Capitalization helper to clean user names on the fly
+  const capitalizeWords = (str: string): string => {
+    return str
+      .split(" ")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+  };
   function update(field: string, value: string) {
-    setForm((p) => ({ ...p, [field]: value }));
+    const finalValue = field === "name" ? capitalizeWords(value) : value;
+    setForm((prev) => ({ ...prev, [field]: finalValue }));
   }
+
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
-    if (!form.type) { setError("Please select a matter type."); return; }
-    if (form.description.length < 20) {
-      setError("Please describe your matter in more detail (at least 20 characters).");
+    if (!form.type) {
+      setError("Please select a matter type.");
       return;
     }
+
+    if (form.description.length < 20) {
+      setError(
+        "Please describe your matter in more detail (at least 20 characters).",
+      );
+      return;
+    }
+
+    if (!hasConsented) {
+      setConsentError(
+        "You must agree to the Terms and Privacy Policy to create an account.",
+      );
+      return;
+    }
+
     setLoading(true);
     const res = await fetch("/api/matters", {
       method: "POST",
@@ -58,7 +101,10 @@ export default function SubmitPage() {
     });
     const data = await res.json();
     setLoading(false);
-    if (!res.ok) { setError(data.error ?? "Submission failed. Please try again."); return; }
+    if (!res.ok) {
+      setError(data.error ?? "Submission failed. Please try again.");
+      return;
+    }
     setRefNum(data.referenceNumber);
   }
 
@@ -160,7 +206,7 @@ export default function SubmitPage() {
                   First name <span className="text-red-500">*</span>
                 </label>
                 <input
-                  className="input"
+                  className="input capitalize"
                   placeholder="Amaka"
                   required
                   value={form.firstName}
@@ -168,7 +214,7 @@ export default function SubmitPage() {
                 />
               </div>
               <div>
-                <label className="label">
+                <label className="label capitalize">
                   Last name <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -297,6 +343,49 @@ export default function SubmitPage() {
                         : "Critical"}
                   </button>
                 ))}
+              </div>
+              {/* Consent Box Section */}
+              <div className="border-t border-gray-100 pt-4 dark:border-gray-800 space-y-2">
+                <div className="flex items-start gap-2.5 text-sm text-gray-600 dark:text-gray-300">
+                  {/* The Checkbox element */}
+                  <input
+                    type="checkbox"
+                    id="legal-consent"
+                    checked={hasConsented}
+                    onChange={handleCheckboxChange}
+                    className="mt-1 h-4 w-4 rounded border-gray-300 text-brand-600 focus:ring-brand-500 cursor-pointer"
+                  />
+                  <label
+                    htmlFor="legal-consent"
+                    className="select-none leading-normal cursor-pointer"
+                  >
+                    I agree to the{" "}
+                    <Link
+                      href="/legal/terms"
+                      target="_blank"
+                      className="text-brand-600 font-medium underline hover:text-brand-700"
+                    >
+                      Terms of Use
+                    </Link>{" "}
+                    and have read the{" "}
+                    <Link
+                      href="/legal/privacy"
+                      target="_blank"
+                      className="text-brand-600 font-medium underline hover:text-brand-700"
+                    >
+                      Privacy Policy
+                    </Link>
+                    .
+                  </label>
+                </div>
+
+                {/* Consent Warning Message */}
+                {consentError && (
+                  <div className="flex items-start gap-2 text-rose-500 text-sm font-medium pt-1 animate-pulse">
+                    <AlertCircle className="w-3.5 h-3.5 mt-0.5 shrink-0" />
+                    <span>{consentError}</span>
+                  </div>
+                )}
               </div>
             </div>
           </div>
