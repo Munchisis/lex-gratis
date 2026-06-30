@@ -77,7 +77,8 @@ export function LawyerSidebar({ user }: Props) {
             <div className="text-xs text-gray-500 truncate">{user.email}</div>
           </div>
         </div>
-        <div className="px-3 mb-3">
+
+        <div className="w-fit px-3 mb-3">
           <ThemeToggle />
         </div>
         <button

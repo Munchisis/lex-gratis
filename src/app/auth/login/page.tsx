@@ -16,34 +16,28 @@ function LoginForm() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setError("");
-    setLoading(true);
+ async function handleSubmit(e: React.FormEvent) {
+   e.preventDefault();
+   setError("");
+   setLoading(true);
 
-    const res = await signIn("credentials", {
-      email,
-      password,
-      redirect: false,
-    });
+   const res = await signIn("credentials", {
+     email,
+     password,
+     redirect: false,
+   });
 
-    setLoading(false);
+   if (res?.error) {
+     setLoading(false);
+     setError(res.error);
+     return;
+   }
 
-    if (res?.error) {
-      setError(res.error);
-      return;
-    }
-
-    if (callbackUrl) {
-      router.push(callbackUrl);
-    } else {
-      const sessionRes = await fetch("/api/auth/session");
-      const session = await sessionRes.json();
-      const role = session?.user?.role;
-      
-      router.push(role === "admin" ? "/admin" : "/lawyer");
-    }
-  }
+   // Redirect immediately — middleware will route to the correct dashboard
+   // based on role, or bounce back if wrong role is attempted
+   router.push(callbackUrl || "/dashboard-redirect");
+   router.refresh();
+ }
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4 dark:bg-gray-900">

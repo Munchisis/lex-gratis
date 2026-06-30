@@ -82,7 +82,8 @@ export function AdminSidebar({ user }: Props) {
             <div className="text-xs text-brand-400 truncate">{user.email}</div>
           </div>
         </div>
-        <div className="px-3 mb-3">
+        
+        <div className="w-fit px-3 mb-3">
           <ThemeToggle />
         </div>
 
