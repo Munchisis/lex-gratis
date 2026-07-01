@@ -14,6 +14,11 @@ export interface IUserDocument extends Document {
   activeMatters: number;
   completedMatters: number;
   proBonoHours: number;
+  emailVerified: boolean;
+  emailVerifyToken?: string;
+  emailVerifyExpires?: Date;
+  resetPasswordToken?: string;
+  resetPasswordExpires?: Date;
   comparePassword(candidate: string): Promise<boolean>;
 }
 
@@ -30,6 +35,13 @@ const UserSchema = new Schema<IUserDocument>(
     activeMatters:    { type: Number, default: 0 },
     completedMatters: { type: Number, default: 0 },
     proBonoHours:     { type: Number, default: 0 },
+
+    emailVerified:         { type: Boolean, default: false },
+    emailVerifyToken:      { type: String, select: false },
+    emailVerifyExpires:    { type: Date,   select: false },
+
+    resetPasswordToken:    { type: String, select: false },
+    resetPasswordExpires:  { type: Date,   select: false },
   },
   { timestamps: true }
 );

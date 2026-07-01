@@ -13,8 +13,9 @@ export interface IMatterDocument extends Document {
   type: MatterType;
   description: string;
   urgency: MatterUrgency;
-  status: string;
-  stage: string;
+  status: MatterStatus;
+  stage: MatterStage;
+  staleMatterReminderSent?: boolean;
   assignedLawyer?: mongoose.Types.ObjectId;
   notes: {
     author: mongoose.Types.ObjectId;
@@ -27,8 +28,6 @@ export interface IMatterDocument extends Document {
     changedBy: mongoose.Types.ObjectId;
     changedAt: Date;
   }[];
-    createdAt: Date;
-  updatedAt: Date;
 }
 
 const ClientSchema = new Schema<IClient>(
@@ -74,8 +73,9 @@ const MatterSchema = new Schema<IMatterDocument>(
       ],
       required: true,
     },
-    description:    { type: String, required: true, maxlength: 2000 },
-    urgency:        { type: String, enum: ["normal", "urgent", "critical"], default: "normal" },
+    description:             { type: String, required: true, maxlength: 2000 },
+    urgency:                 { type: String, enum: ["normal", "urgent", "critical"], default: "normal" },
+    staleMatterReminderSent: { type: Boolean, default: false },
     status: {
       type:    String,
       enum:    ["unassigned", "assigned", "in_progress", "under_review", "completed", "archived"],
