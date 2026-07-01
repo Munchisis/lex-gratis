@@ -213,30 +213,42 @@ export default function HomePage() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-gray-100 bg-gray-50 dark:bg-gray-900 dark:border-gray-800">
-        <div className="max-w-5xl mx-auto px-4 py-8 flex items-center sm:justify-between text-xs text-gray-400">
-          <div className="hidden sm:flex items-center gap-2">
+      <footer className="border-t border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-900">
+        <div className="max-w-5xl mx-auto px-4 py-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-gray-400">
+          <div className="flex items-center gap-2">
             <Scale className="w-4 h-4" />
             <span>HUMRI — Pro Bono Legal Aid Nigeria</span>
           </div>
           <div className="flex gap-4">
             <Link
               href="/submit"
-              className="hover:text-gray-600 dark:hover:text-gray-300"
+              className="hover:text-gray-600 dark:hover:text-gray-200"
             >
               Submit matter
             </Link>
             <Link
               href="/track"
-              className="hover:text-gray-600 dark:hover:text-gray-300"
+              className="hover:text-gray-600 dark:hover:text-gray-200"
             >
               Track matter
             </Link>
             <Link
-              href="/auth/login"
-              className="hover:text-gray-600 dark:hover:text-gray-300"
+              href="/legal/privacy"
+              className="hover:text-gray-600 dark:hover:text-gray-200"
             >
-              Sign in
+              Privacy
+            </Link>
+            <Link
+              href="/legal/terms"
+              className="hover:text-gray-600 dark:hover:text-gray-200"
+            >
+              Terms
+            </Link>
+            <Link
+              href="/legal/cookies"
+              className="hover:text-gray-600 dark:hover:text-gray-200"
+            >
+              Cookies
             </Link>
           </div>
         </div>

@@ -173,11 +173,16 @@ export default function RegisterPage() {
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4 dark:bg-gray-900">
       <div className="w-full max-w-lg">
         <div className="flex items-center gap-3 justify-center mb-8">
-          <div className="w-10 h-10 bg-brand-800 rounded-xl flex items-center justify-center">
+          <Link
+            href="/"
+            className="w-10 h-10 bg-brand-800 rounded-xl flex items-center justify-center"
+          >
             <Scale className="w-5 h-5 text-brand-100" />
-          </div>
+          </Link>
           <div>
-            <div className="text-lg font-semibold leading-none">HUMRI</div>
+            <Link href="/" className="text-lg font-semibold leading-none">
+              HUMRI
+            </Link>
             <div className="text-xs text-gray-400 tracking-wide uppercase mt-0.5">
               Volunteer lawyer registration
             </div>
@@ -331,7 +336,7 @@ export default function RegisterPage() {
                 >
                   I agree to the{" "}
                   <Link
-                    href="/terms"
+                    href="/legal/terms"
                     target="_blank"
                     className="text-brand-600 font-medium underline hover:text-brand-700"
                   >
@@ -339,7 +344,7 @@ export default function RegisterPage() {
                   </Link>{" "}
                   and have read the{" "}
                   <Link
-                    href="/privacy"
+                    href="/legal/privacy"
                     target="_blank"
                     className="text-brand-600 font-medium underline hover:text-brand-700"
                   >
@@ -351,7 +356,7 @@ export default function RegisterPage() {
 
               {/* Consent Warning Message */}
               {consentError && (
-                <div className="flex items-start gap-2 text-red-600 text-xs font-medium pt-1 animate-pulse">
+                <div className="flex items-start gap-2 text-rose-500 text-xs font-medium pt-1 animate-pulse">
                   <AlertCircle className="w-3.5 h-3.5 mt-0.5 shrink-0" />
                   <span>{consentError}</span>
                 </div>
