@@ -11,73 +11,58 @@ function LoginForm() {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") ?? "";
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [email, setEmail]           = useState("");
+  const [password, setPassword]     = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
+  const [error, setError]           = useState("");
+  const [loading, setLoading]       = useState(false);
 
- async function handleSubmit(e: React.FormEvent) {
-   e.preventDefault();
-   setError("");
-   setLoading(true);
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
 
-   const res = await signIn("credentials", {
-     email,
-     password,
-     redirect: false,
-   });
+    const res = await signIn("credentials", {
+      email,
+      password,
+      rememberMe: rememberMe ? "true" : "false",
+      redirect: false,
+    });
 
-   if (res?.error) {
-     setLoading(false);
-     setError(res.error);
-     return;
-   }
+    if (res?.error) {
+      setLoading(false);
+      setError(res.error);
+      return;
+    }
 
-   // Redirect immediately — middleware will route to the correct dashboard
-   // based on role, or bounce back if wrong role is attempted
-   router.push(callbackUrl || "/dashboard-redirect");
-   router.refresh();
- }
+    router.push(callbackUrl || "/dashboard-redirect");
+    router.refresh();
+  }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4 dark:bg-gray-900">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <div className="flex items-center gap-3 justify-center mb-8">
-          <Link
-            href="/"
-            className="w-10 h-10 bg-brand-800 rounded-xl flex items-center justify-center"
-          >
+          <div className="w-10 h-10 bg-brand-800 rounded-xl flex items-center justify-center">
             <Scale className="w-5 h-5 text-brand-100" />
-          </Link>
+          </div>
           <div>
-            <Link
-              href="/"
-              className="text-lg font-semibold text-gray-900 leading-none dark:text-gray-300"
-            >
-              HumRi
-            </Link>
-            <div className="text-xs text-gray-400 tracking-wide uppercase mt-0.5">
-              legal aid
-            </div>
+            <div className="text-lg font-semibold text-gray-900 dark:text-gray-100 leading-none">HUMRI</div>
+            <div className="text-xs text-gray-400 tracking-wide uppercase mt-0.5">Pro bono legal aid</div>
           </div>
         </div>
 
         <div className="card">
-          <h1 className="text-xl font-medium text-gray-900 mb-1 dark:text-gray-300">
-            Sign in
-          </h1>
-          <p className="text-sm text-gray-500 mb-6 dark:text-gray-400">
+          <h1 className="text-xl font-medium text-gray-900 dark:text-gray-100 mb-1">Sign in</h1>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
             Lawyer and admin access only.{" "}
-            <Link
-              href="/submit"
-              className="text-brand-600 hover:underline dark:text-brand-400"
-            >
+            <Link href="/submit" className="text-brand-600 hover:underline">
               Submit a matter instead →
             </Link>
           </p>
 
           {error && (
-            <div className="flex items-start gap-2 bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg px-4 py-3 mb-5">
+            <div className="flex items-start gap-2 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 text-sm rounded-lg px-4 py-3 mb-5">
               <AlertCircle className="w-4 h-4 mt-0.5 shrink-0" />
               <span>{error}</span>
             </div>
@@ -85,9 +70,7 @@ function LoginForm() {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="label">
-                Email address<span className="text-red-500">*</span>
-              </label>
+              <label className="label">Email address</label>
               <input
                 type="email"
                 className="input"
@@ -98,10 +81,14 @@ function LoginForm() {
                 autoComplete="email"
               />
             </div>
+
             <div>
-              <label className="label">
-                Password <span className="text-red-500">*</span>
-              </label>
+              <div className="flex items-center justify-between mb-1">
+                <label className="label mb-0">Password</label>
+                <Link href="/auth/forgot-password" className="text-xs text-brand-600 hover:underline">
+                  Forgot password?
+                </Link>
+              </div>
               <input
                 type="password"
                 className="input"
@@ -112,15 +99,26 @@ function LoginForm() {
                 autoComplete="current-password"
               />
             </div>
+
+            <label className="flex items-center gap-2 cursor-pointer select-none">
+              <input
+                type="checkbox"
+                checked={rememberMe}
+                onChange={(e) => setRememberMe(e.target.checked)}
+                className="w-4 h-4 rounded border-gray-300 dark:border-gray-600 text-brand-600 focus:ring-brand-400"
+              />
+              <span className="text-sm text-gray-600 dark:text-gray-400">
+                Remember me for 30 days
+              </span>
+            </label>
+
             <button
               type="submit"
               disabled={loading}
               className="btn btn-primary w-full justify-center py-2.5 mt-2"
             >
               {loading ? (
-                <>
-                  <Loader2 className="w-4 h-4 animate-spin" /> Signing in…
-                </>
+                <><Loader2 className="w-4 h-4 animate-spin" /> Signing in…</>
               ) : (
                 "Sign in"
               )}
@@ -128,12 +126,9 @@ function LoginForm() {
           </form>
         </div>
 
-        <p className="text-center text-sm text-gray-500 mt-5">
+        <p className="text-center text-sm text-gray-500 dark:text-gray-400 mt-5">
           Volunteer lawyer?{" "}
-          <Link
-            href="/auth/register"
-            className="text-brand-600 hover:underline font-medium"
-          >
+          <Link href="/auth/register" className="text-brand-600 hover:underline font-medium">
             Apply to join →
           </Link>
         </p>
