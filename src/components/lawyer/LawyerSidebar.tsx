@@ -3,25 +3,18 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
-import {
-  Scale,
-  LayoutDashboard,
-  FileText,
-  LogOut,
-  ChevronRight,
-  Inbox,
-} from "lucide-react";
+import { Scale, LayoutDashboard, FileText, LogOut, ChevronRight, LifeBuoy } from "lucide-react";
 import { cn, getInitials } from "@/lib/utils";
-import { ThemeToggle } from "@/components/shared/themeToggle";
+import { ThemeToggle } from "../shared/themeToggle";
 
 interface Props {
   user: { name?: string | null; email?: string | null };
 }
 
 const nav = [
-  { href: "/lawyer", label: "My dashboard", icon: LayoutDashboard },
-  { href: "/lawyer/pool", label: "Open matters", icon: Inbox },
-  { href: "/lawyer/matters", label: "My matters", icon: FileText },
+  { href: "/lawyer",         label: "My dashboard", icon: LayoutDashboard },
+  { href: "/lawyer/matters", label: "My matters",   icon: FileText        },
+  { href: "/lawyer/support", label: "Contact admin", icon: LifeBuoy       },
 ];
 
 export function LawyerSidebar({ user }: Props) {
@@ -33,12 +26,12 @@ export function LawyerSidebar({ user }: Props) {
         <div className="w-8 h-8 bg-brand-600 rounded-lg flex items-center justify-center shrink-0">
           <Scale className="w-4 h-4 text-white" />
         </div>
-        <Link href="/">
+        <div>
           <div className="text-sm font-semibold text-white leading-none">
-            HUMRI
+            Lex Gratis
           </div>
-        </Link>
-        <div className="text-xs text-gray-400 mt-0.5">Lawyer portal</div>
+          <div className="text-xs text-gray-400 mt-0.5">Lawyer portal</div>
+        </div>
       </div>
 
       <nav className="flex-1 py-4 px-3 space-y-0.5">
@@ -77,7 +70,7 @@ export function LawyerSidebar({ user }: Props) {
             <div className="text-xs text-gray-500 truncate">{user.email}</div>
           </div>
         </div>
-        <div className="px-3 mb-3">
+        <div className="w-fit px-3 mb-3">
           <ThemeToggle />
         </div>
         <button

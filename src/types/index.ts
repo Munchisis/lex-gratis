@@ -12,6 +12,7 @@ export interface IUser {
   role: UserRole;
   specialisation?: string;
   isApproved: boolean;      // admin must approve lawyers before first login
+  emailVerified?: boolean;
   barNumber?: string;       // Nigerian Bar Association number
   state?: string;
   activeMatters: number;
